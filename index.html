@@ -21,10 +21,44 @@
 			text-align: left;
 			background-color: #ffffff;
 			/* 背景改为白色 */
-			padding: 20px;
-			margin: 0 25%;
+
 			margin-bottom: 300px;
 		}
+
+		/* 针对手机端（宽度小于或等于 768px） */
+		@media (max-width: 768px) {
+			body {
+				padding: 5px;
+				margin: 0 10px;
+			}
+
+			.buttons>button {
+				margin: 5px;
+				font-size: 16px;
+			}
+			.buttons{
+				align-items: center;
+			}
+			.el-radio__label {
+				font-size: 16px;
+			}	
+			.search-dialog{
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+			}
+
+		}
+
+		/* 针对电脑端（宽度大于 768px） */
+		@media (min-width: 769px) {
+			body {
+				padding: 20px;
+				margin: 0 25%;
+			}
+		}
+
+
 
 		.dashed-line {
 			border-top: 1px dashed #ccc;
@@ -145,7 +179,7 @@
 	<div id="app">
 		<h1>猜歌名Plus</h1>
 		<h6>*仅供学习交流*</h6>
-		<div style="display: flex;justify-content: start;margin-bottom: 16px;flex-wrap: wrap;">
+		<div style="display: flex;justify-content: start;margin-bottom: 16px;flex-wrap: wrap;" class="buttons">
 			<button @click="changeAnother">换一首</button>
 			<button @click="addTips" style="margin-left: 10px;">加点提示</button>
 			<button @click="showSingerSetting=!showSingerSetting;showSearchSong=false;" style="margin-left: 10px;">
@@ -187,7 +221,7 @@
 		</div>
 
 		<!-- 搜歌 -->
-		<div v-if="showSearchSong">
+		<div v-if="showSearchSong" class="search-dialog">
 			歌手 <el-input class="input-new-tag" v-model="searchParam.singer" size="small" style="margin: 5px;width: 30%;"
 				clearable>
 			</el-input>
@@ -293,7 +327,7 @@
 				searchList: [],
 				memorySetting: {
 					singerMode: 'diy',
-					dynamicTags: ['王菲', '张惠妹','蔡依林','周杰伦', '林俊杰', '陈奕迅'],
+					dynamicTags: ['王菲', '张惠妹', '蔡依林', '周杰伦', '林俊杰', '陈奕迅'],
 				}
 			},
 			mounted() {
