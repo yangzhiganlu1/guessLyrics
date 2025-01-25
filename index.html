@@ -288,6 +288,7 @@
 			<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary">猜！</el-button>
 		</div>
 		<div v-if="success" style="color:#8ecc6a;"> 恭喜你猜对咯！</div>
+		<div v-if="wrongMessage" style="color:#f74f44;"> {{wrongMessage}}</div>
 		<h2>歌名：</h2>
 		<div class="box-container" :class="{ cantcopy:!success }">
 			<div class="box" v-for="(letter, index) in titleLetters" :key="index"
@@ -332,6 +333,7 @@
 		new Vue({
 			el: '#app',
 			data: {
+				wrongMessage: '',
 				visible: false,
 				message: '',
 				loading: true,
@@ -557,6 +559,7 @@
 				},
 				//点击猜测按钮
 				guess() {
+					this.wrongMessage = '';
 					const guessValue = this.inputLetter.trim();
 					if (this.success) return;
 					if (!guessValue) return;
@@ -589,11 +592,13 @@
 					if (!found) {
 						
 						this.showMessage(`"${guessValue}" 不在歌词中`);
+						this.wrongMessage = `"${guessValue}" 不在歌词中`;
 						if (!this.wrongGuesses.includes(guessValue)) {
 							this.wrongGuesses.push(guessValue);
 						}
 					} else {
 						this.checkCompleted();
+						this.wrongMessage = '';
 					}
 					// 清空输入框
 					this.inputLetter = '';
