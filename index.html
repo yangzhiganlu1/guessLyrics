@@ -17,6 +17,23 @@
 	<script src="./js/lyrics5.js"></script>
 	<link rel="stylesheet" href="./css/base.css">
 	<style>
+		.fixed-message {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			background-color: rgba(0, 0, 0, 0.8);
+			/* 背景色 */
+			color: white;
+			/* 字体颜色 */
+			text-align: center;
+			/* 文本居中 */
+			padding: 10px;
+			/* 内边距 */
+			z-index: 1000;
+			/* 确保在顶部显示 */
+		}
+
 		body {
 			font-family: Arial, sans-serif;
 			text-align: left;
@@ -188,6 +205,9 @@
 <body>
 
 	<div id="app">
+		<div v-if="visible" class="fixed-message">
+			{{ message }}
+		</div>
 		<h1>猜歌名Plus</h1>
 		<h6>*仅供学习交流*</h6>
 		<div style="display: flex;justify-content: start;margin-bottom: 16px;flex-wrap: wrap;" class="buttons">
@@ -313,6 +333,8 @@
 		new Vue({
 			el: '#app',
 			data: {
+				visible: false,
+				message: '',
 				loading: true,
 				vipVersion: false,
 				success: false,
@@ -362,10 +384,8 @@
 						song: ''
 					};
 					this.showSearchSong = false;
-					this.$message.success({
-						message: '已切换~',
-						duration: 1500
-					});
+				
+					this.showMessage('已切换~');
 					this.resetGuess();
 				},
 				//搜索歌曲
@@ -415,16 +435,12 @@
 					let inputValue = this.inputValue;
 					if (!inputValue) return;
 					if (this.memorySetting.dynamicTags.includes(inputValue)) {
-						this.$message.warning({
-							message: `"${inputValue}" 已经存在`,
-							duration: 1500 // 持续时间，单位为毫秒
-						});
+						
+						this.showMessage(`"${inputValue}" 已经存在`);
 						// return;
 					} else if (lyricsArray.filter(f => f.singer == inputValue).length == 0) {
-						this.$message.warning({
-							message: `曲库里没有“${inputValue}”的歌...`,
-							duration: 1500 // 持续时间，单位为毫秒
-						});
+						
+						this.showMessage(`曲库里没有“${inputValue}”的歌...`);
 					} else {
 						this.memorySetting.dynamicTags.push(inputValue);
 						this.saveMemorySetting();
@@ -485,6 +501,16 @@
 					});
 					this.lyricLetters = lyricLetters;
 					// console.log('this.lyricLetters', this.lyricLetters);
+				},
+				//显示消息
+				showMessage(message) {
+					this.message = message;
+					this.visible = true;
+
+					// 3秒后自动隐藏消息
+					setTimeout(() => {
+						this.visible = false;
+					}, 1500);
 				},
 				//随机题目
 				setQuestion() {
@@ -562,10 +588,8 @@
 					});
 
 					if (!found) {
-						this.$message.warning({
-							message: `"${guessValue}" 不在歌词中`,
-							duration: 1500
-						});
+						
+						this.showMessage(`"${guessValue}" 不在歌词中`);
 						if (!this.wrongGuesses.includes(guessValue)) {
 							this.wrongGuesses.push(guessValue);
 						}
