@@ -1,0 +1,193 @@
+.sketch {
+    /* 必须有高度 overflow 为自动 */
+    overflow: auto;
+    height: 434px;
+    border-top: 1px solid #eff1f4;
+    border-bottom: 1px solid #eff1f4;
+    padding: 0px 30px 11px 27px;
+}
+
+/* 滚动条的样式,宽高分别对应横竖滚动条的尺寸 */
+.sketch::-webkit-scrollbar {
+    width: 3px;
+}
+
+/* 滚动条里面默认的小方块,自定义样式 */
+.sketch::-webkit-scrollbar-thumb {
+    background: #8798af;
+    border-radius: 2px;
+}
+
+/* 滚动条里面的轨道 */
+.sketch::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.el-dialog {
+    --el-dialog-margin-top: 33vh;
+}
+
+.box-com {
+    padding: 0 10px;
+}
+
+.vxe-pager--total {
+    visibility: hidden !important;
+    width: 0;
+}
+
+.desc-text {
+    display: flex;
+    align-items: end;
+    padding-bottom: 3px;
+    border-bottom: 2px solid #646565;
+    font-size: 14px;
+    margin-top: 8px;
+    margin-bottom: 3px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.audit-item {
+    margin-top: 20px;
+    display: flex;
+
+    >label {
+        width: 86px;
+    }
+}
+
+.normalOrder {
+    margin-top: 10px;
+}
+
+.vol-tabs {
+    background: white;
+}
+
+.el-dialog__body {
+    max-height: 620px;
+}
+
+.el-tabs__header {
+    min-height: 39px;
+    padding-right: 5px;
+}
+
+.el-tabs__new-tab {
+    color: #fdfdfd;
+    background-color: #5ea9ff;
+    margin: 10px 0 9px 10px;
+}
+
+.text-delete {
+    font-size: 5px;
+    margin-top: -10px;
+}
+
+.demo-ruleForm {
+    display: flex;
+    align-items: center;
+
+    .el-form-item1 {
+        margin-top: 15px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+
+        .index {
+            flex: 1;
+            height: 100%;
+        }
+    }
+}
+
+.total-number {
+    float: right;
+    font-size: 20px;
+    margin-top: -6px;
+}
+
+.total-number-readonly {
+    display: flex;
+    font-size: 20px;
+    justify-content: flex-end;
+    align-items: baseline;
+    margin-top: -6px;
+}
+
+.button-txt {
+    margin: auto;
+}
+
+.input-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    align-content: center;
+}
+
+.button-col {
+    display: flex;
+    align-items: baseline;
+}
+
+.el-icon-circle-plus-outline .el-icon-remove-outline {
+    margin-top: 5px;
+}
+
+.caozuo {
+    width: 90px;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.grid-search {
+    margin-top: 0px;
+    height: 50px;
+
+    .view-header {
+        padding-left: 15px;
+        padding-right: 15px;
+        display: flex;
+        margin-bottom: 1px;
+
+        .notice {
+            flex: 1;
+        }
+
+        .search-line {
+            width: 155px;
+            margin-right: 20px;
+        }
+
+        .paixu {
+            padding: 0 10px;
+        }
+    }
+}
+
+.grid-container {
+    padding: 0 15px;
+}
+
+.desc-text {
+    margin-top: 8px;
+    border-bottom: 2px solid #646565;
+    font-size: 14px;
+    margin-bottom: 3px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.col-green {
+    background-color: #d8e4bc;
+}
+
+.col-red {
+    background-color: #f2dcdb;
+}
