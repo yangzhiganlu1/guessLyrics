@@ -484,7 +484,7 @@
 					let title = this.cleanString(question.name).trim();
 					let singer = this.cleanString(question.singer).trim();
 					//截取前20行
-					let lyricDetail = question.lyric.filter(f => _this.cleanString(f) != '').slice(0, 20);
+					let lyricDetail = question.lyric.filter(f => _this.cleanString(f) != '').slice(0, 80);
 					//将歌名转换为数组
 					this.titleLetters = title.split('').map(char => ({
 						letter: char.toString(),
