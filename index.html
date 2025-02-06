@@ -240,7 +240,7 @@
 		</div>
 		<!-- 歌手选择 -->
 		<div v-if="showSingerSetting">
-			<el-radio v-model="memorySetting.singerMode" label="all">我全都要！（会有很多奇奇怪怪你根本没听过的歌）</el-radio>
+			<el-radio v-model="memorySetting.singerMode" label="all">我全都要！</el-radio>
 			<el-radio v-model="memorySetting.singerMode" label="diy">我自己选~ （可以自己加歌手）</el-radio>
 			<div v-if="memorySetting.singerMode=='diy'" style="margin-top: 10px;">
 				<el-tag :key="tag" v-for="tag in memorySetting.dynamicTags" closable :disable-transitions="false"
@@ -371,7 +371,7 @@
 				},
 				searchList: [],
 				memorySetting: {
-					singerMode: 'diy',
+					singerMode: 'all',
 					dynamicTags: ['王菲', '张惠妹', '蔡依林', '周杰伦', '林俊杰', '陈奕迅'],
 				}
 			},
