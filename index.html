@@ -38,12 +38,14 @@
 			/* 背景改为白色 */
 
 			margin-bottom: 300px;
+			height: fit-content !important;
 		}
 
 		body,
 		html {
 			height: 100%;
 			overflow: visible;
+
 		}
 
 		/* 针对手机端（宽度小于或等于 768px） */
@@ -51,6 +53,8 @@
 			body {
 				padding: 5px;
 				margin: 0 10px;
+				height: fit-content;
+				padding-bottom: 100px;
 			}
 
 			.buttons>button {
@@ -79,7 +83,18 @@
 			body {
 				padding: 20px;
 				margin: 0 25%;
+				padding-bottom: 100px;
 			}
+
+			.buttons {
+				align-items: center;
+
+			}
+
+			.buttons>button {
+				margin-top: 10px;
+			}
+
 		}
 
 
@@ -190,6 +205,7 @@
 			/* 猜错字的背景为红色 */
 			color: white;
 			/* 字体颜色为白色 */
+			padding-bottom: 200px;
 		}
 
 		.el-tag+.el-tag {
@@ -220,23 +236,37 @@
 		</div>
 		<h1>猜歌名Plus</h1>
 		<h6>*仅供学习交流*</h6>
+		<!-- 按钮组 -->
 		<div style="display: flex;justify-content: start;margin-bottom: 16px;flex-wrap: wrap;" class="buttons">
 			<button @click="changeAnother">换一首</button>
 			<button @click="addTips" style="margin-left: 10px;">加点提示</button>
-			<button @click="showSingerSetting=!showSingerSetting;showSearchSong=false;" style="margin-left: 10px;">
-				歌手选择
+
+			<button @click="showSingerSetting=!showSingerSetting;showSearchSong=false;showPlayTogether=false;"
+				style="margin-left: 10px;">
+				选歌手
 				<i class="el-icon-arrow-down" v-if="!showSingerSetting"></i>
 				<i class="el-icon-arrow-up" v-else></i>
 			</button>
-			<button @click="showSearchSong=!showSearchSong;showSingerSetting=false;"
-				style="margin-left: 10px;margin-right: 20px;">搜歌出题
+			<button @click="showSearchSong=!showSearchSong;showSingerSetting=false;showPlayTogether=false;"
+				style="margin-left: 10px;">搜歌
 				<i class="el-icon-arrow-down" v-if="!showSearchSong"></i>
 				<i class="el-icon-arrow-up" v-else></i>
 			</button>
-			无敌版 <el-switch v-model="vipVersion" active-color="#1484cb" inactive-color="grey" style="margin-left: 5px;">
-			</el-switch>
-			<button @click="showAnswer" v-if="vipVersion" style="margin-left: 10px;">显示答案</button>
-			<button @click="resetGuess" v-if="vipVersion" style="margin-left: 10px;">重置</button>
+
+			<!-- <button @click="clickEveryDay" style="margin-left: 10px;">每日挑战</button>
+
+			<button @click="showPlayTogether=!showPlayTogether;showSingerSetting=false;showSearchSong=false;"
+				style="margin-left: 10px;margin-right: 20px;">一起猜
+				<i class="el-icon-arrow-down" v-if="!showPlayTogether"></i>
+				<i class="el-icon-arrow-up" v-else></i>
+			</button> -->
+
+			<div style="display: flex;align-items: center;margin-top: 10px;margin-left: 10px;">无敌版 <el-switch v-model="vipVersion"
+					active-color="#1484cb" inactive-color="grey" style="margin-left: 5px;">
+				</el-switch>
+				<button @click="showAnswer" v-if="vipVersion" style="margin-left: 10px;">显示答案</button>
+				<button @click="resetGuess" v-if="vipVersion" style="margin-left: 10px;">重置</button>
+			</div>
 		</div>
 		<!-- 歌手选择 -->
 		<div v-if="showSingerSetting">
@@ -260,7 +290,6 @@
 			</div> -->
 			<div class="dashed-line"></div>
 		</div>
-
 		<!-- 搜歌 -->
 		<div v-if="showSearchSong" class="search-dialog">
 			歌手 <el-input class="input-new-tag" v-model="searchParam.singer" size="small" style="margin: 5px;width: 30%;"
@@ -286,20 +315,31 @@
 			<div v-else-if="cantSearch">查不到...！！！</div>
 
 		</div>
-
+		<!-- 一起猜 -->
+		<div v-if="showPlayTogether">
+			<el-input class="input-new-tag" v-model="searchParam.song" size="small" style="margin: 5px;width: 30%;"
+				clearable>
+			</el-input>
+			<el-button class="button-new-tag" size="small" @click="searchSong" style="margin: 5px;">切换</el-button>
+		</div>
 
 		<!--主页  -->
 		<div>
 			<strong>猜测次数：</strong><span>{{ guessCount }}</span>
+			<strong>提示次数：</strong><span>{{ tipCount }}</span>
 		</div>
+		<!-- 猜测输入框 -->
 		<div style="display: flex;width: 100%;justify-content: center;margin-top: 10px;">
-			<el-input v-model="inputLetter" maxlength="1" clearable placeholder="只输入一个字" class="input-class"
-				style="width: 90%;margin-right: 10px;" @change="guess">
+			<el-input v-model="inputLetter" ref="guessInput" maxlength="1" clearable placeholder="只输入一个字"
+				class="input-class" style="width: 90%;margin-right: 10px;" @change="guess">
 			</el-input>
 			<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary">猜！</el-button>
 		</div>
-		<div v-if="success" style="color:#8ecc6a;"> 恭喜你猜对咯！</div>
+		<div v-if="success&&!clickShowAnswer" style="color:#8ecc6a;"> 恭喜你猜对咯！</div>
 		<div v-if="wrongMessage" style="color:#f74f44;"> {{wrongMessage}}</div>
+		<div v-if="successMessage" style="color:#8ecc6a;"> {{successMessage}}</div>
+
+		<!--  歌名：-->
 		<h2>歌名：</h2>
 		<div class="box-container" :class="{ cantcopy:!success }">
 			<div class="box" v-for="(letter, index) in titleLetters" :key="index"
@@ -307,6 +347,7 @@
 				{{ letter.letter }}
 			</div>
 		</div>
+		<!--  歌手：-->
 		<h2>歌手：</h2>
 		<div class="box-container" :class="{ cantcopy:!success }">
 			<div class="box" v-for="(letter, index) in singerLetters" :key="index"
@@ -314,6 +355,7 @@
 				{{ letter.letter }}
 			</div>
 		</div>
+
 		<h2>歌词：</h2>
 		<div class="box-container" :class="{ cantcopy:!success }">
 			<div v-for="(line, index) in lyricLetters" :key="index"
@@ -332,6 +374,7 @@
 		<el-dialog title="" :visible.sync="centerDialogVisible" width="200px" center>
 			<div>恭喜你猜对咯！！</div>
 			<div>一共只猜测了{{ guessCount }}次~~</div>
+			<div>( 提示{{ tipCount }}次 )</div>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="centerDialogVisible = false">关闭</el-button>
 			</span>
@@ -345,7 +388,9 @@
 			el: '#app',
 			data: {
 				wrongMessage: '',
+				successMessage: '',
 				visible: false,
+				clickShowAnswer: false,
 				message: '',
 				loading: true,
 				vipVersion: false,
@@ -354,12 +399,16 @@
 				overLimit: false,
 				showSingerSetting: false,
 				showSearchSong: false,
+				showPlayTogether: false,
 				inputVisible: false,
 				cantSearch: false,
+				isEveryDaySuccess: false,
 				inputLetter: '',
 				guessCount: 0,
+				tipCount: 0,
 				notFoundMessage: '',
 				wrongGuesses: [],
+				correctGuesses: [],
 				quizInput: '',
 				titleLetters: [],
 				lyricLetters: [],
@@ -373,7 +422,8 @@
 				memorySetting: {
 					singerMode: 'all',
 					dynamicTags: ['王菲', '张惠妹', '蔡依林', '周杰伦', '林俊杰', '陈奕迅'],
-				}
+				},
+
 			},
 			mounted() {
 				let memorySetting = localStorage.getItem('guessLyrics');
@@ -381,8 +431,24 @@
 					this.memorySetting = JSON.parse(memorySetting);
 				}
 				this.setQuestion();
+				const _this = this;
+				window.addEventListener('scroll', this.handleScroll);
+				this.inputLetter = '';
+				setTimeout(() => {
+					_this.$refs.guessInput.focus()
+				}, 300)
+			},
+			beforeDestroy() {
+				window.removeEventListener('scroll', this.handleScroll);
 			},
 			methods: {
+				//禁止下拉刷新
+				handleScroll(event) {
+					if (window.scrollY === 0 && event.deltaY < 0) {
+						console.log('handleScroll')
+						event.preventDefault();
+					}
+				},
 				//切歌
 				switchSong(index) {
 					this.titleLetters = [];
@@ -460,31 +526,13 @@
 					this.inputVisible = false;
 					this.inputValue = '';
 				},
-				//加点提示
-				addTips() {
-					const _this = this;
-					let string = '';
-					this.lyricLetters.forEach(
-						(line) => {
-							line.forEach(letter => {
-								if (!_this.isBlank(letter) && !letter.revealed) {
-									string += letter.letter;
-								}
-							})
-						}
-					);
-					if (string.length == 0) return;
-					const randomIndex = Math.floor(Math.random() * string.length);
-					this.inputLetter = string[randomIndex];
-					this.guess();
-				},
 				//题目格式转换
 				convertQuestion(question) {
 					const _this = this;
 					let title = this.cleanString(question.name).trim();
 					let singer = this.cleanString(question.singer).trim();
 					//截取前80行
-					let lyricDetail = question.lyric.filter(f => _this.cleanString(f) != '').slice(0, 80);
+					let lyricDetail = question.lyric.filter(f => _this.cleanString(f, singer) != '').slice(0, 80);
 					//将歌名转换为数组
 					this.titleLetters = title.split('').map(char => ({
 						letter: char.toString(),
@@ -550,27 +598,36 @@
 					this.resetGuess();
 				},
 				//去除空格字母数字汉字之外的字符
-				cleanString(input) {
+				cleanString(input, singer) {
 					if (!input) return '';
-
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
 					input = input.replace(/[^a-zA-Z0-9\s\u4e00-\u9fa5]/g, ' ');
+					//校正异常空格
 					input = this.checkAndFixStringSpacing(input);
 					// 将连续三个及以上的空格替换为一个空格
 					input = input.replace(/\s{3,}/g, ' ');
-					if (input.includes('曲：') || input.includes('曲 ：') || input.includes('词：') || input.includes('词 ：')) return '';
 					// 去掉开头的所有空格
 					input = input.replace(/^\s+/, '');
+					//一个英文的话 删掉
+					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
+					//去掉歌词里有歌手名字的行
+					if (singer && input.includes(singer)) return '';
+					//去掉没用的行
+					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')) return '';
 					return input;
 				},
 				//重置
 				resetGuess() {
 					this.wrongMessage = '';
+					this.successMessage = '';
 					this.guessCount = 0;
+					this.tipCount = 0;
 					this.wrongGuesses = [];
+					this.correctGuesses = [];
 					this.notFoundMessage = '';
 					this.inputLetter = '';
 					this.success = false;
+					this.clickShowAnswer = false;
 					this.overLimit = false;
 					this.lyricLetters.forEach(line => line.forEach(letter => {
 						letter.revealed = false;
@@ -585,14 +642,41 @@
 						letter.auto = false;
 					}); // 清除已显示的歌手
 				},
+				//清空输入框
+				clearInput() {
+					const _this = this;
+					this.inputLetter = '';
+					setTimeout(() => {
+						_this.$refs.guessInput.focus()
+					}, 300)
+				},
 				//点击猜测按钮
-				guess() {
+				guess(type) {
 					this.wrongMessage = '';
+					this.successMessage = '';
 					const guessValue = this.inputLetter.trim();
 					if (this.success) return;
 					if (!guessValue) return;
+					// 如果猜测的是已经掀开的
+					if (this.correctGuesses.includes(guessValue)) {
+						this.showMessage(`"${guessValue}"已猜过！在歌词中！`);
+						this.successMessage = `"${guessValue}"已猜过！在歌词中！`;
+						// 清空输入框
+						this.clearInput()
+						return;
+					}
+					if (this.wrongGuesses.includes(guessValue)) {
+						this.showMessage(`"${guessValue}"已猜过！不在歌词中！`);
+						this.wrongMessage = `"${guessValue}"已猜过！不在歌词中！`;
+						// 清空输入框
+						this.clearInput()
+						return;
+					}
 					// 增加猜测次数
-					this.guessCount++;
+					if (type == 'tips')
+						this.tipCount++;
+					else
+						this.guessCount++;
 					let found = false;
 					this.titleLetters.forEach(letter => {
 						if (letter.letter === guessValue) {
@@ -618,26 +702,52 @@
 					});
 
 					if (!found) {
-
 						this.showMessage(`"${guessValue}" 不在歌词中`);
 						this.wrongMessage = `"${guessValue}" 不在歌词中`;
 						if (!this.wrongGuesses.includes(guessValue)) {
 							this.wrongGuesses.push(guessValue);
 						}
 					} else {
-						this.checkCompleted();
+						if (!this.correctGuesses.includes(guessValue)) {
+							this.correctGuesses.push(guessValue);
+						}
+
+						if (!this.checkCompleted()) {
+							this.successMessage = `"${guessValue}" 在歌词中!!`
+						};
 						this.wrongMessage = '';
+
 					}
 					// 清空输入框
-					this.inputLetter = '';
+					this.clearInput()
+				},
+				//加点提示
+				addTips() {
+					const _this = this;
+					let string = '';
+					this.lyricLetters.forEach(
+						(line) => {
+							line.forEach(letter => {
+								if (!_this.isBlank(letter) && !letter.revealed) {
+									string += letter.letter;
+								}
+							})
+						}
+					);
+					if (string.length == 0) return;
+					const randomIndex = Math.floor(Math.random() * string.length);
+					this.inputLetter = string[randomIndex];
+					this.guess('tips');
 				},
 				//检查是否猜出歌名
 				checkCompleted() {
 					if (this.titleLetters.filter(f => !f.revealed && !this.isBlank(f.letter)).length == 0) {
 						this.centerDialogVisible = true;
 						this.success = true;
-						this.showAnswer()
+						this.showAnswer('completed');
+						return true;
 					}
+					return false;
 				},
 				//判定是否为空格
 				isBlank(char) {
@@ -650,6 +760,8 @@
 					if (str.length <= 3) {
 						return str;
 					}
+					//
+
 					// 检查是否是异常情况
 					let isAbnormal = true;
 					for (let i = 0; i < str.length - 1; i++) {
@@ -677,8 +789,10 @@
 					return result;
 				},
 				//显示答案
-				showAnswer() {
+				showAnswer(type) {
 					const _this = this;
+					this.wrongMessage = '';
+					this.clickShowAnswer = type == 'completed' ? false : true;
 					this.success = true;
 					//显示全部歌词
 					this.lyricLetters.forEach(
@@ -703,6 +817,18 @@
 						}
 					}); // 显示全部歌手
 				},
+				//每日挑战
+				clickEveryDay() {
+
+				},
+				//获取日期
+				getCurrentDate() {
+					const date = new Date();
+					const year = date.getFullYear();
+					const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从 0 开始
+					const day = String(date.getDate()).padStart(2, '0');
+					return Number(`${year}${month}${day}`); // 转换为数字
+				}
 			}
 		});
 	</script>
