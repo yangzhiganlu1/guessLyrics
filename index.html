@@ -261,8 +261,8 @@
 				<i class="el-icon-arrow-up" v-else></i>
 			</button> -->
 
-			<div style="display: flex;align-items: center;margin-top: 10px;margin-left: 10px;">无敌版 <el-switch v-model="vipVersion"
-					active-color="#1484cb" inactive-color="grey" style="margin-left: 5px;">
+			<div style="display: flex;align-items: center;margin-top: 10px;margin-left: 10px;">无敌版 <el-switch
+					v-model="vipVersion" active-color="#1484cb" inactive-color="grey" style="margin-left: 5px;">
 				</el-switch>
 				<button @click="showAnswer" v-if="vipVersion" style="margin-left: 10px;">显示答案</button>
 				<button @click="resetGuess" v-if="vipVersion" style="margin-left: 10px;">重置</button>
@@ -614,7 +614,12 @@
 					if (singer && input.includes(singer)) return '';
 					//去掉没用的行
 					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')) return '';
+					input=this.replaceCharacter(input,'Album');
+					input=this.replaceCharacter(input,'Version')
 					return input;
+				},
+				replaceCharacter(str, charToReplace) {
+					return str.replace(new RegExp(charToReplace, 'gi'), ''); // 使用正则表达式进行全局替换
 				},
 				//重置
 				resetGuess() {
