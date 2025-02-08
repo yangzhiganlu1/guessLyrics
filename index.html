@@ -205,7 +205,7 @@
 			/* 猜错字的背景为红色 */
 			color: white;
 			/* 字体颜色为白色 */
-			padding-bottom: 200px;
+			
 		}
 
 		.el-tag+.el-tag {
@@ -236,6 +236,7 @@
 		</div>
 		<h1>猜歌名Plus</h1>
 		<h6>*仅供学习交流*</h6>
+		<h6 v-if="songID!='' ">「{{songID}}」</h6>
 		<!-- 按钮组 -->
 		<div style="display: flex;justify-content: start;margin-bottom: 16px;flex-wrap: wrap;" class="buttons">
 			<button @click="changeAnother">换一首</button>
@@ -253,9 +254,9 @@
 				<i class="el-icon-arrow-up" v-else></i>
 			</button>
 
-			<!-- <button @click="clickEveryDay" style="margin-left: 10px;">每日挑战</button>
+			<!-- <button @click="clickEveryDay" style="margin-left: 10px;">每日挑战</button> -->
 
-			<button @click="showPlayTogether=!showPlayTogether;showSingerSetting=false;showSearchSong=false;"
+			<!-- <button @click="showPlayTogether=!showPlayTogether;showSingerSetting=false;showSearchSong=false;"
 				style="margin-left: 10px;margin-right: 20px;">一起猜
 				<i class="el-icon-arrow-down" v-if="!showPlayTogether"></i>
 				<i class="el-icon-arrow-up" v-else></i>
@@ -407,6 +408,7 @@
 				guessCount: 0,
 				tipCount: 0,
 				notFoundMessage: '',
+				songID: '',
 				wrongGuesses: [],
 				correctGuesses: [],
 				quizInput: '',
@@ -454,15 +456,14 @@
 					this.titleLetters = [];
 					this.singerLetters = [];
 					this.lyricLetters = [];
+					this.songID = this.searchList[index].id;
 					this.convertQuestion(this.searchList[index]);
-
 					this.searchList = [];
 					this.searchParam = {
 						singer: '',
 						song: ''
 					};
 					this.showSearchSong = false;
-
 					this.showMessage('已切换~');
 					this.resetGuess();
 				},
@@ -572,22 +573,30 @@
 						this.visible = false;
 					}, 1500);
 				},
-				//随机题目
-				setQuestion() {
+				//设置题目
+				setQuestion(type, index) {
 					const _this = this;
 					let question = {};
 					let randomIndex = 0;
-					if (this.memorySetting.singerMode == 'all') {
-						randomIndex = Math.floor(Math.random() * lyricsArrayLength);
-						question = lyricsArray[randomIndex];
-					} else {
-						//随机选择一个歌手
-						randomIndex = Math.floor(Math.random() * this.memorySetting.dynamicTags.length);
-						let searchList = lyricsArray.filter(f => f.singer == this.memorySetting.dynamicTags[
-							randomIndex]);
-						const randomIndex2 = Math.floor(Math.random() * searchList.length);
-						question = searchList[randomIndex2];
+					//指定index
+					if (type = 'custom' && index) {
+						question = lyricsArray[index];
 					}
+					//随机
+					else {
+						if (this.memorySetting.singerMode == 'all') {
+							randomIndex = Math.floor(Math.random() * lyricsArrayLength);
+							question = lyricsArray[randomIndex];
+						} else {
+							//随机选择一个歌手
+							randomIndex = Math.floor(Math.random() * this.memorySetting.dynamicTags.length);
+							let searchList = lyricsArray.filter(f => f.singer == this.memorySetting.dynamicTags[
+								randomIndex]);
+							const randomIndex2 = Math.floor(Math.random() * searchList.length);
+							question = searchList[randomIndex2];
+						}
+					}
+					this.songID = question.id;
 					// 返回选择的问题
 					// console.log(question);
 					this.convertQuestion(question);
@@ -614,14 +623,15 @@
 					if (singer && input.includes(singer)) return '';
 					//去掉没用的行
 					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')) return '';
-					input=this.replaceCharacter(input,'Album');
-					input=this.replaceCharacter(input,'Version')
+					input = this.replaceCharacter(input, 'Album');
+					input = this.replaceCharacter(input, 'Version')
 					return input;
 				},
+				///将输入字符替换成无
 				replaceCharacter(str, charToReplace) {
 					return str.replace(new RegExp(charToReplace, 'gi'), ''); // 使用正则表达式进行全局替换
 				},
-				//重置
+				//重置猜测状态
 				resetGuess() {
 					this.wrongMessage = '';
 					this.successMessage = '';
@@ -833,7 +843,8 @@
 					const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份从 0 开始
 					const day = String(date.getDate()).padStart(2, '0');
 					return Number(`${year}${month}${day}`); // 转换为数字
-				}
+				},
+
 			}
 		});
 	</script>
