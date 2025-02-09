@@ -167,6 +167,14 @@
 			background: #006400;
 		}
 
+		.black {
+			color: #000
+		}
+
+		.green {
+			color: rgb(142, 204, 149);
+		}
+
 		.boxstyleauto {
 			color: black;
 			background: white;
@@ -235,33 +243,33 @@
 		<div v-if="visible" class="fixed-message">
 			{{ message }}
 		</div>
-		<h1>猜歌名Plus</h1>
-		<h6>*仅供学习交流*</h6>
-		<h6 v-if="songID!='' ">「{{songID}}」</h6>
+		<div style="display: flex;align-items: center;justify-content: space-between;">
+			<div style="display: flex;align-items: center;">
+				<h1 style="margin-bottom: 5px;margin-top: 5px;">猜歌名Plus</h1>
+				<el-tag type="info" v-if="currentSongSetting.songID!='' " effect="plain" size="mini"
+					style="margin-left: 10px;">{{currentSongSetting.songID}}</el-tag>
+			</div>
+
+			<el-tag type="success" v-if="currentSongSetting.isEveryDayMode" style="margin-right: 2px;">每日挑战</el-tag>
+			<el-tag v-if="!currentSongSetting.isEveryDayMode" style="margin-right: 2px;">随机模式</el-tag>
+		</div>
+
 		<!-- 按钮组 -->
 		<div style="display: flex;justify-content: start;margin-bottom: 16px;flex-wrap: wrap;" class="buttons">
 			<button @click="changeAnother">换一首</button>
 			<button @click="addTips" style="margin-left: 10px;">加点提示</button>
 
-			<button @click="showSingerSetting=!showSingerSetting;showSearchSong=false;showPlayTogether=false;"
-				style="margin-left: 10px;">
+			<button @click="showSingerSetting=!showSingerSetting;showSearchSong=false;" style="margin-left: 10px;">
 				选歌手
 				<i class="el-icon-arrow-down" v-if="!showSingerSetting"></i>
 				<i class="el-icon-arrow-up" v-else></i>
 			</button>
-			<button @click="showSearchSong=!showSearchSong;showSingerSetting=false;showPlayTogether=false;"
-				style="margin-left: 10px;">搜歌
+			<button @click="showSearchSong=!showSearchSong;showSingerSetting=false;" style="margin-left: 10px;">搜歌
 				<i class="el-icon-arrow-down" v-if="!showSearchSong"></i>
 				<i class="el-icon-arrow-up" v-else></i>
 			</button>
 
 			<button @click="clickEveryDay" style="margin-left: 10px;">每日挑战</button>
-
-			<!-- <button @click="showPlayTogether=!showPlayTogether;showSingerSetting=false;showSearchSong=false;"
-				style="margin-left: 10px;margin-right: 20px;">一起猜
-				<i class="el-icon-arrow-down" v-if="!showPlayTogether"></i>
-				<i class="el-icon-arrow-up" v-else></i>
-			</button> -->
 
 			<div style="display: flex;align-items: center;margin-top: 10px;margin-left: 10px;">无敌版 <el-switch
 					v-model="vipVersion" active-color="#1484cb" inactive-color="grey" style="margin-left: 5px;">
@@ -294,13 +302,15 @@
 		</div>
 		<!-- 搜歌 -->
 		<div v-if="showSearchSong" class="search-dialog">
-			歌手 <el-input class="input-new-tag" v-model="searchParam.singer" size="small" style="margin: 5px;width: 30%;"
-				clearable>
-			</el-input>
-			歌名 <el-input class="input-new-tag" v-model="searchParam.song" size="small" style="margin: 5px;width: 30%;"
-				clearable>
-			</el-input>
-			<el-button class="button-new-tag" size="small" @click="searchSong" style="margin: 5px;">搜索</el-button>
+			<div style="display: flex;align-items: center;flex-wrap: nowrap;">歌手 <el-input class="input-new-tag"
+					v-model="searchParam.singer" size="small" style="margin: 5px;width: 25%;" clearable>
+				</el-input>
+				歌名 <el-input class="input-new-tag" v-model="searchParam.song" size="small"
+					style="margin: 5px;width: 25%;" clearable>
+				</el-input>
+				<el-button class="button-new-tag" size="small" @click="searchSong" style="margin: 5px;">搜索</el-button>
+			</div>
+
 			<!-- 结果列表 -->
 			<div v-if="searchList.length>0">
 				<div v-for="(line, index) in searchList" :key="index" class="search-row" @click="switchSong(index)">
@@ -317,18 +327,11 @@
 			<div v-else-if="cantSearch">查不到...！！！</div>
 
 		</div>
-		<!-- 一起猜 -->
-		<div v-if="showPlayTogether">
-			<el-input class="input-new-tag" v-model="searchParam.song" size="small" style="margin: 5px;width: 30%;"
-				clearable>
-			</el-input>
-			<el-button class="button-new-tag" size="small" @click="searchSong" style="margin: 5px;">切换</el-button>
-		</div>
 
 		<!--主页  -->
-		<div>
-			<strong>猜测次数：</strong><span>{{ guessCount }}</span>
-			<strong>提示次数：</strong><span>{{ tipCount }}</span>
+		<div :class="{ black:!currentSongSetting.success,green: currentSongSetting.success}">
+			<strong>猜测次数：</strong><span>{{ currentSongSetting.guessCount }}</span>
+			<strong>提示次数：</strong><span>{{ currentSongSetting.tipCount }}</span>
 		</div>
 		<!-- 猜测输入框 -->
 		<div style="display: flex;width: 100%;justify-content: center;margin-top: 10px;">
@@ -337,30 +340,49 @@
 			</el-input>
 			<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary">猜！</el-button>
 		</div>
-		<div v-if="success&&!clickShowAnswer" style="color:#8ecc6a;"> 恭喜你猜对咯！</div>
+		<div v-if="currentSongSetting.success&&!clickShowAnswer"
+			style="margin-top: 10px;display: flex;align-items: center;">
+			<div style="color:#8ecc6a;display: flex;align-items: center;"> 恭喜你猜对咯！</div>
+			<button @click="clickShare" style="
+			margin-left: 0px;
+			padding: 2px 8px;
+			font-size: 12px; 
+			background-color: #67C23A;
+			color: white; 
+			border: none;
+			border-radius: 4px; 
+			cursor: pointer;
+			display: inline-flex; 
+			align-items: center; 
+		  ">
+				分享
+				<i class="el-icon-share" style="margin-left: 4px;"></i>
+			</button>
+		</div>
+
 		<div v-if="wrongMessage" style="color:#f74f44;"> {{wrongMessage}}</div>
 		<div v-if="successMessage" style="color:#8ecc6a;"> {{successMessage}}</div>
 
 		<!--  歌名：-->
-		<h2>歌名：</h2>
-		<div class="box-container" :class="{ cantcopy:!success }">
-			<div class="box" v-for="(letter, index) in titleLetters" :key="index"
+		<h2 style="margin-bottom: 5px;">歌名：</h2>
+		<div class="box-container" :class="{ cantcopy:!currentSongSetting.success }">
+			<div class="box" v-for="(letter, index) in currentSongSetting.titleLetters" :key="index"
 				:class="{ blank:letter.blank,unrevealed:letter.blank?true:!letter.revealed,revealed: letter.blank?false:letter.revealed,auto:letter.revealed?false:letter.auto, }">
 				{{ letter.letter }}
 			</div>
 		</div>
 		<!--  歌手：-->
-		<h2>歌手：</h2>
-		<div class="box-container" :class="{ cantcopy:!success }">
-			<div class="box" v-for="(letter, index) in singerLetters" :key="index"
+		<h2 style="margin-bottom: 5px;margin-top: 5px;">歌手：</h2>
+		<div class="box-container" :class="{ cantcopy:!currentSongSetting.success }">
+			<div class="box" v-for="(letter, index) in currentSongSetting.singerLetters" :key="index"
 				:class="{ blank:letter.blank,unrevealed:letter.blank?true:!letter.revealed,revealed: letter.blank?false:letter.revealed,auto:letter.revealed?false:letter.auto, }">
 				{{ letter.letter }}
 			</div>
 		</div>
-
-		<h2>歌词：</h2>
-		<div class="box-container" :class="{ cantcopy:!success }">
-			<div v-for="(line, index) in lyricLetters" :key="index"
+		<!-- 歌词 -->
+		<h2 style="margin-bottom: 5px;margin-top: 5px;">歌词：</h2>
+		<div class="box-container" :class="{ cantcopy:!currentSongSetting.success }">
+			<div v-for="(line, index) in currentSongSetting.lyricLetters" :key="index"
 				style="display: flex;width: 100%;flex-wrap: wrap;flex-direction: row;">
 				<div v-for="(letter, idx) in line" :key="idx" class="box"
 					:class="{ blank:letter.blank,unrevealed:letter.blank?true:!letter.revealed,revealed: letter.blank?false:letter.revealed,auto:letter.revealed?false:letter.auto, }">
@@ -369,16 +391,19 @@
 			</div>
 		</div>
 		<div class="wrong-guess-box" style="display: flex;flex-wrap: wrap;width: 100%;">
-			<div class="box" v-for="(guess, index) in wrongGuesses" :key="index">
+			<div class="box" v-for="(guess, index) in currentSongSetting.wrongGuesses" :key="index">
 				{{ guess }}
 			</div>
 		</div>
+		<h6 style="margin-top: 20px;color: grey;">*仅供学习交流*</h6>
+		<!-- 成功弹框 -->
 		<el-dialog title="" :visible.sync="centerDialogVisible" width="200px" center>
 			<div>恭喜你猜对咯！！</div>
-			<div>一共只猜测了{{ guessCount }}次~~</div>
-			<div>( 提示{{ tipCount }}次 )</div>
+			<div>一共只猜测了{{ currentSongSetting.guessCount }}次~~</div>
+			<div>( 提示{{ currentSongSetting.tipCount }}次 )</div>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="centerDialogVisible = false">关闭</el-button>
+				<el-button @click="clickShare">分享</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -391,32 +416,20 @@
 			data: {
 				wrongMessage: '',
 				successMessage: '',
+				message: '',
 				visible: false,
 				clickShowAnswer: false,
-				message: '',
 				loading: true,
 				vipVersion: false,
-				success: false,
 				centerDialogVisible: false,
 				overLimit: false,
 				showSingerSetting: false,
 				showSearchSong: false,
-				showPlayTogether: false,
 				inputVisible: false,
 				cantSearch: false,
-				isEveryDaySuccess: false,
-				isEveryDayMode: false,
 				inputLetter: '',
-				guessCount: 0,
-				tipCount: 0,
 				notFoundMessage: '',
-				songID: '',
-				wrongGuesses: [],
-				correctGuesses: [],
 				quizInput: '',
-				titleLetters: [],
-				lyricLetters: [],
-				singerLetters: [],
 				inputValue: '',
 				searchParam: {
 					singer: '',
@@ -427,14 +440,66 @@
 					singerMode: 'all',
 					dynamicTags: ['王菲', '张惠妹', '蔡依林', '周杰伦', '林俊杰', '陈奕迅'],
 				},
-
+				currentSongSetting: {
+					success: false,
+					titleLetters: [],
+					lyricLetters: [],
+					singerLetters: [],
+					wrongGuesses: [],
+					correctGuesses: [],
+					songID: '',
+					guessCount: 0,
+					tipCount: 0,
+					isEveryDayMode: false,
+				},
+				everyDaySetting: {
+					success: false,
+					guessCount: 0,
+					tipCount: 0,
+					titleLetters: [],
+					lyricLetters: [],
+					singerLetters: [],
+					wrongGuesses: [],
+					correctGuesses: [],
+					guessDate: 0,
+					songID: '',
+				}
 			},
 			mounted() {
+				const params = this.getQueryParams();
+				console.log(params)
+				if (params?.songID) {
+
+				}
 				let memorySetting = localStorage.getItem('guessLyrics');
+				let currentSongSetting = localStorage.getItem('currentSongSetting');
+				let everyDaySetting = localStorage.getItem('everyDaySetting');
 				if (memorySetting) {
 					this.memorySetting = JSON.parse(memorySetting);
 				}
-				this.setQuestion();
+				if (currentSongSetting) {
+					this.currentSongSetting = JSON.parse(currentSongSetting);
+				}
+				//只获取今天存储的每日挑战数据
+				if (everyDaySetting && this.getCurrentDate() == JSON.parse(everyDaySetting).guessDate) {
+					this.everyDaySetting = JSON.parse(everyDaySetting);
+				} else {
+					this.everyDaySetting.guessDate = this.getCurrentDate()
+				}
+				//如果有缓存就获取缓存最近猜测的歌曲,如果缓存里显示猜测次数或提示次数大于0说明是猜了一半
+				if (this.currentSongSetting.guessCount > 0 || this.currentSongSetting.tipCount > 0) {
+
+				}
+				//查看每日挑战做完了没
+				else if (!this.everyDaySetting.success) {
+
+					this.currentSongSetting = JSON.parse(JSON.stringify(this.everyDaySetting));
+					this.clickEveryDay();
+				}
+				else {
+					this.currentSongSetting.isEveryDayMode = false;
+					this.setQuestion();
+				}
 				const _this = this;
 				window.addEventListener('scroll', this.handleScroll);
 				this.inputLetter = '';
@@ -453,12 +518,24 @@
 						event.preventDefault();
 					}
 				},
+				//用ID跳转
+				jumpBySongID(id) {
+					id = id.toString().trim();
+					if (id.includes('S')) id = this.replaceCharacter(input, 'S');
+					id = Number(id);
+					let findObj = lyric[id];
+					if (!findObj) return false;
+					//获取今日ID
+					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
+					this.currentSongSetting.isEveryDayMode = index == id ? true : false;
+					this.setQuestion('custom', id);
+				},
 				//切歌
 				switchSong(index) {
-					this.titleLetters = [];
-					this.singerLetters = [];
-					this.lyricLetters = [];
-					this.songID = this.searchList[index].id;
+					this.currentSongSetting.titleLetters = [];
+					this.currentSongSetting.singerLetters = [];
+					this.currentSongSetting.lyricLetters = [];
+					this.currentSongSetting.songID = this.searchList[index].id;
 					this.convertQuestion(this.searchList[index]);
 					this.searchList = [];
 					this.searchParam = {
@@ -498,6 +575,11 @@
 				//存到本地记忆
 				saveMemorySetting() {
 					localStorage.setItem('guessLyrics', JSON.stringify(this.memorySetting));
+					localStorage.setItem('currentSongSetting', JSON.stringify(this.currentSongSetting));
+					if (this.currentSongSetting.isEveryDayMode) {
+						this.everyDaySetting = JSON.parse(JSON.stringify(this.currentSongSetting));
+						localStorage.setItem('everyDaySetting', JSON.stringify(this.everyDaySetting));
+					}
 				},
 				//删除标签
 				handleClose(tag) {
@@ -537,33 +619,32 @@
 					//截取前80行
 					let lyricDetail = question.lyric.filter(f => _this.cleanString(f, singer) != '').slice(0, 80);
 					//将歌名转换为数组
-					this.titleLetters = title.split('').map(char => ({
+					this.currentSongSetting.titleLetters = title.split('').map(char => ({
 						letter: char.toString(),
 						revealed: false,
 						auto: false,
 						blank: _this.isBlank(char.toString())
 					}));
 					//将歌手转换为数组
-					this.singerLetters = singer.split('').map(char => ({
+					this.currentSongSetting.singerLetters = singer.split('').map(char => ({
 						letter: char.toString(),
 						revealed: false,
 						auto: false,
 						blank: _this.isBlank(char.toString())
 					}));
 					//将歌词转换为数组
-					let lyricLetters = [];
+					let lys = [];
 					lyricDetail.forEach((line, index) => {
-						lyricLetters.push([]);
+						lys.push([]);
 						line = _this.cleanString(line);
-						lyricLetters[lyricLetters.length - 1] = line.split('').map(char => ({
+						lys[lys.length - 1] = line.split('').map(char => ({
 							letter: char.toString(),
 							revealed: false,
 							auto: false,
 							blank: _this.isBlank(char.toString())
 						}));
 					});
-					this.lyricLetters = lyricLetters;
-					// console.log('this.lyricLetters', this.lyricLetters);
+					this.currentSongSetting.lyricLetters = lys;
 				},
 				//显示消息
 				showMessage(message) {
@@ -583,6 +664,7 @@
 					//指定index
 					if (type = 'custom' && index) {
 						question = lyricsArray[index];
+						if (!question) this.changeAnother();
 					}
 					//随机
 					else {
@@ -598,13 +680,15 @@
 							question = searchList[randomIndex2];
 						}
 					}
-					this.songID = question.id;
+					this.currentSongSetting.songID = question.id;
+					this.currentSongSetting.isEveryDayMode = this.currentSongSetting.songID == this.everyDaySetting.songID;
 					// 返回选择的问题
 					// console.log(question);
 					this.convertQuestion(question);
 				},
 				//换一首
 				changeAnother() {
+					this.currentSongSetting.isEveryDayMode = false;
 					this.setQuestion();
 					this.resetGuess();
 				},
@@ -612,7 +696,8 @@
 				cleanString(input, singer) {
 					if (!input) return '';
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
-					input = input.replace(/[^a-zA-Z0-9\s\u4e00-\u9fa5]/g, ' ');
+					input = input.replace(/[^a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
+					input = input.replace(/'/g, '');
 					//校正异常空格
 					input = this.checkAndFixStringSpacing(input);
 					// 将连续三个及以上的空格替换为一个空格
@@ -625,36 +710,47 @@
 					if (singer && input.includes(singer)) return '';
 					//去掉没用的行
 					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')) return '';
-					input = this.replaceCharacter(input, 'Album');
-					input = this.replaceCharacter(input, 'Version')
+					input = this.replaceCharacter(input);
 					return input;
 				},
 				///将输入字符替换成无
 				replaceCharacter(str, charToReplace) {
 					return str.replace(new RegExp(charToReplace, 'gi'), ''); // 使用正则表达式进行全局替换
 				},
+				replaceCharacters(input) {
+					input = this.replaceCharacter(input, 'Album');
+					input = this.replaceCharacter(input, 'Version');
+					input = this.replaceCharacter(input, '“');
+					input = this.replaceCharacter(input, '”');
+					input = this.replaceCharacter(input, '"');
+					input = this.replaceCharacter(input, '<');
+					input = this.replaceCharacter(input, '>');
+					input = this.replaceCharacter(input, '《');
+					input = this.replaceCharacter(input, '》');
+					return input;
+				},
 				//重置猜测状态
 				resetGuess() {
 					this.wrongMessage = '';
 					this.successMessage = '';
-					this.guessCount = 0;
-					this.tipCount = 0;
-					this.wrongGuesses = [];
-					this.correctGuesses = [];
+					this.currentSongSetting.guessCount = 0;
+					this.currentSongSetting.tipCount = 0;
+					this.currentSongSetting.wrongGuesses = [];
+					this.currentSongSetting.correctGuesses = [];
 					this.notFoundMessage = '';
 					this.inputLetter = '';
-					this.success = false;
+					this.currentSongSetting.success = false;
 					this.clickShowAnswer = false;
 					this.overLimit = false;
-					this.lyricLetters.forEach(line => line.forEach(letter => {
+					this.currentSongSetting.lyricLetters.forEach(line => line.forEach(letter => {
 						letter.revealed = false;
 						letter.auto = false;
 					})); // 清除已显示的歌词
-					this.titleLetters.forEach(letter => {
+					this.currentSongSetting.titleLetters.forEach(letter => {
 						letter.revealed = false;
 						letter.auto = false;
 					}); // 清除已显示的歌名
-					this.singerLetters.forEach(letter => {
+					this.currentSongSetting.singerLetters.forEach(letter => {
 						letter.revealed = false;
 						letter.auto = false;
 					}); // 清除已显示的歌手
@@ -672,44 +768,50 @@
 					this.wrongMessage = '';
 					this.successMessage = '';
 					const guessValue = this.inputLetter.trim();
-					if (this.success) return;
+					if (this.currentSongSetting.success) return;
 					if (!guessValue) return;
 					// 如果猜测的是已经掀开的
-					if (this.correctGuesses.includes(guessValue)) {
+					if (this.currentSongSetting.correctGuesses.includes(guessValue)) {
 						this.showMessage(`"${guessValue}"已猜过！在歌词中！`);
 						this.successMessage = `"${guessValue}"已猜过！在歌词中！`;
 						// 清空输入框
-						this.clearInput()
+						this.clearInput();
 						return;
 					}
-					if (this.wrongGuesses.includes(guessValue)) {
+					if (this.currentSongSetting.wrongGuesses.includes(guessValue)) {
 						this.showMessage(`"${guessValue}"已猜过！不在歌词中！`);
 						this.wrongMessage = `"${guessValue}"已猜过！不在歌词中！`;
 						// 清空输入框
-						this.clearInput()
+						this.clearInput();
 						return;
 					}
 					// 增加猜测次数
-					if (type == 'tips')
-						this.tipCount++;
-					else
-						this.guessCount++;
+					if (type == 'tips') {
+						this.currentSongSetting.tipCount++;
+						if (this.currentSongSetting.isEveryDayMode)
+							this.currentSongSetting.everyDayTipCount++
+					}
+					else {
+						this.currentSongSetting.guessCount++;
+
+						if (this.currentSongSetting.isEveryDayMode)
+							this.currentSongSetting.everyDayGuessCount++;
+					}
+
 					let found = false;
-					this.titleLetters.forEach(letter => {
+					this.currentSongSetting.titleLetters.forEach(letter => {
 						if (letter.letter === guessValue) {
 							letter.revealed = true;
 							found = true;
 						}
 					});
-
-					this.singerLetters.forEach(letter => {
+					this.currentSongSetting.singerLetters.forEach(letter => {
 						if (letter.letter === guessValue) {
 							letter.revealed = true;
 							found = true;
 						}
 					});
-
-					this.lyricLetters.forEach(line => {
+					this.currentSongSetting.lyricLetters.forEach(line => {
 						line.forEach(letter => {
 							if (letter.letter === guessValue) {
 								letter.revealed = true;
@@ -717,32 +819,31 @@
 							}
 						});
 					});
-
 					if (!found) {
 						this.showMessage(`"${guessValue}" 不在歌词中`);
 						this.wrongMessage = `"${guessValue}" 不在歌词中`;
-						if (!this.wrongGuesses.includes(guessValue)) {
-							this.wrongGuesses.push(guessValue);
+						if (!this.currentSongSetting.wrongGuesses.includes(guessValue)) {
+							this.currentSongSetting.wrongGuesses.push(guessValue);
 						}
 					} else {
-						if (!this.correctGuesses.includes(guessValue)) {
-							this.correctGuesses.push(guessValue);
+						if (!this.currentSongSetting.correctGuesses.includes(guessValue)) {
+							this.currentSongSetting.correctGuesses.push(guessValue);
 						}
-
 						if (!this.checkCompleted()) {
 							this.successMessage = `"${guessValue}" 在歌词中!!`
 						};
 						this.wrongMessage = '';
-
 					}
 					// 清空输入框
-					this.clearInput()
+					this.clearInput();
+					//加缓存
+					this.saveMemorySetting()
 				},
 				//加点提示
 				addTips() {
 					const _this = this;
 					let string = '';
-					this.lyricLetters.forEach(
+					this.currentSongSetting.lyricLetters.forEach(
 						(line) => {
 							line.forEach(letter => {
 								if (!_this.isBlank(letter) && !letter.revealed) {
@@ -758,13 +859,37 @@
 				},
 				//检查是否猜出歌名
 				checkCompleted() {
-					if (this.titleLetters.filter(f => !f.revealed && !this.isBlank(f.letter)).length == 0) {
+					if (this.currentSongSetting.titleLetters.filter(f => !f.revealed && !this.isBlank(f.letter)).length == 0) {
 						this.centerDialogVisible = true;
-						this.success = true;
+						this.currentSongSetting.success = true;
+						if (this.currentSongSetting.isEveryDayMode) {
+							this.everyDaySetting.success = true;
+							this.saveMemorySetting();
+
+						}
+
 						this.showAnswer('completed');
 						return true;
 					}
 					return false;
+				},
+				//解析URL
+				getQueryParams() {
+					const queryString = window.location.search; // 获取查询字符串
+					const params = {};
+
+					if (queryString) {
+						// 去掉开头的 "?"，然后按 "&" 分割
+						queryString
+							.substring(1) // 去掉 "?"
+							.split('&')   // 按 "&" 分割成键值对
+							.forEach((pair) => {
+								const [key, value] = pair.split('='); // 按 "=" 分割键和值
+								params[decodeURIComponent(key)] = decodeURIComponent(value || ''); // 解码并存储
+							});
+					}
+
+					return params;
 				},
 				//判定是否为空格
 				isBlank(char) {
@@ -810,9 +935,9 @@
 					const _this = this;
 					this.wrongMessage = '';
 					this.clickShowAnswer = type == 'completed' ? false : true;
-					this.success = true;
+					this.currentSongSetting.success = true;
 					//显示全部歌词
-					this.lyricLetters.forEach(
+					this.currentSongSetting.lyricLetters.forEach(
 						(line) => {
 							line.forEach(letter => {
 								if (!letter.revealed && !letter.blank) {
@@ -822,13 +947,13 @@
 						}
 					);
 
-					this.titleLetters.forEach(letter => {
+					this.currentSongSetting.titleLetters.forEach(letter => {
 						if (!letter.revealed && !letter.blank) {
 							letter.auto = true
 						}
 					}); // 显示全部歌名
 
-					this.singerLetters.forEach(letter => {
+					this.currentSongSetting.singerLetters.forEach(letter => {
 						if (!letter.revealed && !letter.blank) {
 							letter.auto = true
 						}
@@ -836,13 +961,23 @@
 				},
 				//每日挑战
 				clickEveryDay() {
+					//获取今日ID
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
-					this.setQuestion('custom', index);
-					this.showMessage(index)
+					//如果是还没开始猜
+					if (this.everyDaySetting.guessCount == 0 && this.everyDaySetting.tipCount == 0) {
+						this.setQuestion('custom', index);
+					}
+					//已经开始猜了
+					else {
+						this.currentSongSetting = JSON.parse(JSON.stringify(this.everyDaySetting));
+					}
+					this.currentSongSetting.isEveryDayMode = true;
 				},
 				//分享战绩
 				clickShare() {
-					
+					navigator.clipboard.writeText(`⭐猜歌词Plus⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
+					this.showMessage('已复制到剪贴板~')
+					this.centerDialogVisible = false;
 				},
 				//获取日期
 				getCurrentDate() {
