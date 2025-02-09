@@ -523,7 +523,7 @@
 					id = id.toString().trim();
 					if (id.includes('S')) id = this.replaceCharacter(id, 'S');
 					id = Number(id);
-					let findObj = lyric[id];
+					let findObj = lyrics[id];
 					if (!findObj) return false;
 					//获取今日ID
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
