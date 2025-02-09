@@ -466,7 +466,6 @@
 				}
 			},
 			mounted() {
-
 				let memorySetting = localStorage.getItem('guessLyrics');
 				let currentSongSetting = localStorage.getItem('currentSongSetting');
 				let everyDaySetting = localStorage.getItem('everyDaySetting');
@@ -496,6 +495,7 @@
 					this.currentSongSetting = JSON.parse(JSON.stringify(this.everyDaySetting));
 					this.clickEveryDay();
 				}
+				//做完了就随机开始
 				else {
 					this.currentSongSetting.isEveryDayMode = false;
 					this.setQuestion();
@@ -521,14 +521,15 @@
 				//用ID跳转
 				jumpBySongID(id) {
 					id = id.toString().trim();
-					if (id.includes('S')) id = this.replaceCharacter(input, 'S');
+					if (id.includes('S')) id = this.replaceCharacter(id, 'S');
 					id = Number(id);
 					let findObj = lyric[id];
 					if (!findObj) return false;
 					//获取今日ID
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					this.currentSongSetting.isEveryDayMode = index == id ? true : false;
-					this.setQuestion('custom', id);
+
+					this.currentSongSetting.isEveryDayMode ? this.clickEveryDay() : this.setQuestion('custom', id);
 				},
 				//切歌
 				switchSong(index) {
