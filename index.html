@@ -466,11 +466,7 @@
 				}
 			},
 			mounted() {
-				const params = this.getQueryParams();
-				console.log(params)
-				if (params?.songID) {
 
-				}
 				let memorySetting = localStorage.getItem('guessLyrics');
 				let currentSongSetting = localStorage.getItem('currentSongSetting');
 				let everyDaySetting = localStorage.getItem('everyDaySetting');
@@ -486,13 +482,17 @@
 				} else {
 					this.everyDaySetting.guessDate = this.getCurrentDate()
 				}
+				const params = this.getQueryParams();
+				// console.log(params)
+				if (params?.songID) {
+					this.jumpBySongID(params?.songID);
+				}
 				//如果有缓存就获取缓存最近猜测的歌曲,如果缓存里显示猜测次数或提示次数大于0说明是猜了一半
-				if (this.currentSongSetting.guessCount > 0 || this.currentSongSetting.tipCount > 0) {
+				else if (this.currentSongSetting.guessCount > 0 || this.currentSongSetting.tipCount > 0) {
 
 				}
 				//查看每日挑战做完了没
 				else if (!this.everyDaySetting.success) {
-
 					this.currentSongSetting = JSON.parse(JSON.stringify(this.everyDaySetting));
 					this.clickEveryDay();
 				}
