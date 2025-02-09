@@ -302,6 +302,12 @@
 		</div>
 		<!-- 搜歌 -->
 		<div v-if="showSearchSong" class="search-dialog">
+			<div style="display: flex;align-items: center;flex-wrap: nowrap;">ID　<el-input class="input-new-tag"
+					v-model="inputForID" size="small" style="margin: 5px;width: 25%;" clearable>
+				</el-input>
+				<el-button class="button-new-tag" size="small" @click="jumpBySongID(inputForID)"
+					style="margin: 5px;">切换</el-button>
+			</div>
 			<div style="display: flex;align-items: center;flex-wrap: nowrap;">歌手 <el-input class="input-new-tag"
 					v-model="searchParam.singer" size="small" style="margin: 5px;width: 25%;" clearable>
 				</el-input>
@@ -431,6 +437,7 @@
 				notFoundMessage: '',
 				quizInput: '',
 				inputValue: '',
+				inputForID: '',
 				searchParam: {
 					singer: '',
 					song: ''
@@ -522,6 +529,7 @@
 				jumpBySongID(id) {
 					this.resetGuess();
 					id = id.toString().trim();
+					if (!id) return;
 					if (id.includes('S') || id.includes('s')) {
 						id = this.replaceCharacter(id, 'S');
 						id = this.replaceCharacter(id, 's');
@@ -763,9 +771,13 @@
 				clearInput() {
 					const _this = this;
 					this.inputLetter = '';
-					setTimeout(() => {
-						_this.$refs.guessInput.focus()
-					}, 300)
+					// const inputElement = this.$refs.guessInput.$el.querySelector('input');
+					// console.log(inputElement);  // 获取输入框的值
+					this.$nextTick(() => {
+						const inputElement = this.$refs.guessInput.$el.querySelector('input');
+						console.log(inputElement);  // 检查是否获取到了 input 元素
+						inputElement.focus();  // 聚焦到输入框
+					});
 				},
 				//点击猜测按钮
 				guess(type) {
