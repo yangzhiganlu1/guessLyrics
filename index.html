@@ -520,15 +520,18 @@
 				},
 				//用ID跳转
 				jumpBySongID(id) {
+					this.resetGuess();
 					id = id.toString().trim();
-					if (id.includes('S')) id = this.replaceCharacter(id, 'S');
+					if (id.includes('S') || id.includes('s')) {
+						id = this.replaceCharacter(id, 'S');
+						id = this.replaceCharacter(id, 's');
+					}
 					id = Number(id);
 					let findObj = lyrics[id];
 					if (!findObj) return false;
 					//获取今日ID
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					this.currentSongSetting.isEveryDayMode = index == id ? true : false;
-
 					this.currentSongSetting.isEveryDayMode ? this.clickEveryDay() : this.setQuestion('custom', id);
 				},
 				//切歌
