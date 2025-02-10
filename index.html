@@ -711,8 +711,8 @@
 					if (!input) return '';
 					//去掉歌词里有歌手名字的行
 					if (singer && input.includes(singer)) return '';
-					// 去掉所有的.
-					// input = this.replaceCharacter(input, '.');
+					
+					
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
 					input = input.replace(/[^a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
 					//一些字和符号直接删掉
@@ -727,7 +727,7 @@
 					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
 
 					//去掉没用的行
-					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')) return '';
+					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')||input.includes('词 ')||input.includes('曲 ')) return '';
 					input = this.replaceCharacter(input);
 					return input;
 				},
