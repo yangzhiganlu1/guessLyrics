@@ -709,7 +709,7 @@
 					if (!input) return '';
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
 					input = input.replace(/[^a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
-					input = input.replace(/'/g, '');
+					input = this.replaceCharacters(input);
 					//校正异常空格
 					input = this.checkAndFixStringSpacing(input);
 					// 将连续三个及以上的空格替换为一个空格
@@ -730,6 +730,7 @@
 					return str.replace(new RegExp(charToReplace, 'gi'), ''); // 使用正则表达式进行全局替换
 				},
 				replaceCharacters(input) {
+					input = input.replace(/'/g, '');
 					input = this.replaceCharacter(input, 'Album');
 					input = this.replaceCharacter(input, 'Version');
 					input = this.replaceCharacter(input, '“');
@@ -978,7 +979,7 @@
 				//每日挑战
 				clickEveryDay() {
 					//获取今日ID
-					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
+					let index = this.blackIndex();
 					//如果是还没开始猜
 					if (this.everyDaySetting.guessCount == 0 && this.everyDaySetting.tipCount == 0) {
 						this.setQuestion('custom', index);
@@ -989,9 +990,21 @@
 					}
 					this.currentSongSetting.isEveryDayMode = true;
 				},
+				blackIndex() {
+					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
+					switch (this.getCurrentDate()) {
+						case 20250210:
+							index = 1319;
+							break;
+
+						default:
+							break;
+					}
+					return index;
+				},
 				//分享战绩
 				clickShare() {
-					navigator.clipboard.writeText(`⭐猜歌词Plus⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
+					navigator.clipboard.writeText(`⭐猜歌词Plus⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
 					this.showMessage('已复制到剪贴板~')
 					this.centerDialogVisible = false;
 				},
