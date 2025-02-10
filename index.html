@@ -243,8 +243,10 @@
 		<div style="display: flex;align-items: center;justify-content: space-between;">
 			<div style="display: flex;align-items: center;">
 				<h1 style="margin-bottom: 5px;margin-top: 5px;">猜歌名Plus</h1>
-				<el-tag type="info" v-if="currentSongSetting.songID!='' " effect="plain" size="mini"
-					style="margin-left: 10px;">{{currentSongSetting.songID}}</el-tag>
+				<div @click="copyURL" style="cursor: pointer;"><el-tag type="info" v-if="currentSongSetting.songID!='' "
+						effect="plain" size="mini" style="margin-left: 10px;">{{currentSongSetting.songID}}</el-tag>
+				</div>
+
 			</div>
 
 			<el-tag type="success" v-if="currentSongSetting.isEveryDayMode" style="margin-right: 2px;">每日挑战</el-tag>
@@ -469,6 +471,13 @@
 					correctGuesses: [],
 					guessDate: 0,
 					songID: '',
+				}
+			},
+			watch: {
+				'memorySetting.singerMode': function (newValue, oldValue) {
+					// 处理 singerMode 变化的逻辑
+					this.saveMemorySetting()
+					// 你可以在这里添加其他逻辑，比如 API 调用或状态更新
 				}
 			},
 			mounted() {
@@ -726,11 +735,48 @@
 					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
 
 					//去掉没用的行
-					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词') ||
-					 input.includes('词 ') || input.includes('曲 ') || input.includes('词曲') || 
-					 input.includes('制作人')||input.includes('改编')) return '';
+					if (
+						input.includes('编曲')
+						|| input.includes('作曲')
+						|| input.includes('作词')
+						|| input.includes('词 ')
+						|| input.includes('曲 ')
+						|| input.includes('词曲')
+						|| input.includes('制作人')
+						|| input.includes('改编')
+						|| input.includes('OP：')
+						|| input.includes('曲：')
+						|| input.includes('SP：')
+						|| input.includes('配唱制作')
+						|| input.includes('录音')
+						|| input.includes('编辑：')
+						|| input.includes('吉他：')
+						|| input.includes('吉他 ')
+						|| input.includes('出品')
+						|| input.includes('贝斯：')
+						|| input.includes('鼓：')
+						|| input.includes('监制')
+						|| input.includes('弦乐')
+						|| input.includes('编写')
+						|| input.includes('乐谱：')
+						|| input.includes('混音')
+						|| input.includes('母带')
+						|| input.includes('制作：')
+						|| input.includes('配唱')
+						|| input.includes('和音：')
+						|| input.includes('小号：')
+						|| input.includes('提琴：')
+						|| input.includes('Bass：')
+						|| input.includes('Vocal edite：')
+						|| input.includes('版权')
+					) return '';
 					input = this.replaceCharacter(input);
 					return input;
+				},
+				//复制链接
+				copyURL() {
+					navigator.clipboard.writeText(`https://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
+					this.showMessage('链接已复制！')
 				},
 				///将输入字符替换成无
 				replaceCharacter(str, charToReplace) {
@@ -795,15 +841,23 @@
 					const guessValue = this.inputLetter.trim();
 					if (this.currentSongSetting.success) return;
 					if (!guessValue) return;
+					let lower = guessValue;
+					let upper = guessValue;
+					if (/^[a-zA-Z]+$/.test(guessValue)) {
+						lower = guessValue.toLowerCase();
+						upper = guessValue.toUpperCase();
+					}
 					// 如果猜测的是已经掀开的
-					if (this.currentSongSetting.correctGuesses.includes(guessValue)) {
+					if (this.currentSongSetting.correctGuesses.includes(guessValue)
+						|| this.currentSongSetting.correctGuesses.includes(lower) || this.currentSongSetting.correctGuesses.includes(upper)
+					) {
 						this.showMessage(`"${guessValue}"已猜过！在歌词中！`);
 						this.successMessage = `"${guessValue}"已猜过！在歌词中！`;
 						// 清空输入框
 						this.clearInput();
 						return;
 					}
-					if (this.currentSongSetting.wrongGuesses.includes(guessValue)) {
+					if (this.currentSongSetting.wrongGuesses.includes(guessValue) || this.currentSongSetting.wrongGuesses.includes(lower) || this.currentSongSetting.wrongGuesses.includes(upper)) {
 						this.showMessage(`"${guessValue}"已猜过！不在歌词中！`);
 						this.wrongMessage = `"${guessValue}"已猜过！不在歌词中！`;
 						// 清空输入框
@@ -818,27 +872,26 @@
 					}
 					else {
 						this.currentSongSetting.guessCount++;
-
 						if (this.currentSongSetting.isEveryDayMode)
 							this.currentSongSetting.everyDayGuessCount++;
 					}
 
 					let found = false;
 					this.currentSongSetting.titleLetters.forEach(letter => {
-						if (letter.letter === guessValue) {
+						if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
 							letter.revealed = true;
 							found = true;
 						}
 					});
 					this.currentSongSetting.singerLetters.forEach(letter => {
-						if (letter.letter === guessValue) {
+						if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
 							letter.revealed = true;
 							found = true;
 						}
 					});
 					this.currentSongSetting.lyricLetters.forEach(line => {
 						line.forEach(letter => {
-							if (letter.letter === guessValue) {
+							if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
 								letter.revealed = true;
 								found = true;
 							}
@@ -1002,10 +1055,10 @@
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					switch (this.getCurrentDate()) {
 						case 20250210:
-							index = 3361;
+							index = 10664;
 							break;
-						// case 20250211:
-						// 	index = 14447;
+						case 20250211:
+							index = 3509;
 						default:
 							break;
 					}
