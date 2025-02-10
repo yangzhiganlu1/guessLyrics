@@ -335,21 +335,22 @@
 		</div>
 
 		<!--主页  -->
-		<div :class="{ black:!currentSongSetting.success,green: currentSongSetting.success}">
-			<strong>猜测次数：</strong><span>{{ currentSongSetting.guessCount }}</span>
-			<strong>提示次数：</strong><span>{{ currentSongSetting.tipCount }}</span>
-		</div>
-		<!-- 猜测输入框 -->
-		<div style="display: flex;width: 100%;justify-content: center;margin-top: 10px;">
-			<el-input v-model="inputLetter" ref="guessInput" maxlength="1" clearable placeholder="只输入一个字"
-				class="input-class" style="width: 90%;margin-right: 10px;" @change="guess">
-			</el-input>
-			<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary">猜！</el-button>
-		</div>
-		<div v-if="currentSongSetting.success&&!clickShowAnswer"
-			style="margin-top: 10px;display: flex;align-items: center;">
-			<div style="color:#8ecc6a;display: flex;align-items: center;"> 恭喜你猜对咯！</div>
-			<button @click="clickShare" style="
+		<div style="position: sticky;top:0;background-color: white;padding-bottom: 15px;">
+			<div :class="{ black:!currentSongSetting.success,green: currentSongSetting.success}">
+				<strong>猜测次数：</strong><span>{{ currentSongSetting.guessCount }}</span>
+				<strong>提示次数：</strong><span>{{ currentSongSetting.tipCount }}</span>
+			</div>
+			<!-- 猜测输入框 -->
+			<div style="display: flex;width: 100%;justify-content: center;margin-top: 10px;">
+				<el-input v-model="inputLetter" ref="guessInput" maxlength="1" clearable placeholder="只输入一个字"
+					class="input-class" style="width: 90%;margin-right: 10px;" @change="guess">
+				</el-input>
+				<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary">猜！</el-button>
+			</div>
+			<div v-if="currentSongSetting.success&&!clickShowAnswer"
+				style="margin-top: 10px;display: flex;align-items: center;">
+				<div style="color:#8ecc6a;display: flex;align-items: center;"> 恭喜你猜对咯！</div>
+				<button @click="clickShare" style="
 			margin-left: 0px;
 			padding: 2px 8px;
 			font-size: 12px; 
@@ -361,16 +362,17 @@
 			display: inline-flex; 
 			align-items: center; 
 		  ">
-				分享
-				<i class="el-icon-share" style="margin-left: 4px;"></i>
-			</button>
+					分享
+					<i class="el-icon-share" style="margin-left: 4px;"></i>
+				</button>
+			</div>
+			<div v-if="wrongMessage" style="color:#f74f44;"> {{wrongMessage}}</div>
+			<div v-if="successMessage" style="color:#8ecc6a;"> {{successMessage}}</div>
 		</div>
 
-		<div v-if="wrongMessage" style="color:#f74f44;"> {{wrongMessage}}</div>
-		<div v-if="successMessage" style="color:#8ecc6a;"> {{successMessage}}</div>
 
 		<!--  歌名：-->
-		<h2 style="margin-bottom: 5px;">歌名：</h2>
+		<h2 style="margin-bottom: 5px;margin-top: 0px;">歌名：</h2>
 		<div class="box-container" :class="{ cantcopy:!currentSongSetting.success }">
 			<div class="box" v-for="(letter, index) in currentSongSetting.titleLetters" :key="index"
 				:class="{ blank:letter.blank,unrevealed:letter.blank?true:!letter.revealed,revealed: letter.blank?false:letter.revealed,auto:letter.revealed?false:letter.auto, }">
@@ -538,7 +540,7 @@
 					let findObj = lyrics[id];
 					if (!findObj) return false;
 					//获取今日ID
-					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
+					let index = this.blackIndex();
 					this.currentSongSetting.isEveryDayMode = index == id ? true : false;
 					this.currentSongSetting.isEveryDayMode ? this.clickEveryDay() : this.setQuestion('custom', id);
 				},
@@ -709,6 +711,7 @@
 					if (!input) return '';
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
 					input = input.replace(/[^a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
+					//一些字和符号直接删掉
 					input = this.replaceCharacters(input);
 					//校正异常空格
 					input = this.checkAndFixStringSpacing(input);
@@ -729,6 +732,7 @@
 				replaceCharacter(str, charToReplace) {
 					return str.replace(new RegExp(charToReplace, 'gi'), ''); // 使用正则表达式进行全局替换
 				},
+				//一些字和符号直接删掉
 				replaceCharacters(input) {
 					input = input.replace(/'/g, '');
 					input = this.replaceCharacter(input, 'Album');
@@ -996,7 +1000,6 @@
 						case 20250210:
 							index = 1319;
 							break;
-
 						default:
 							break;
 					}
