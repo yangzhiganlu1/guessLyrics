@@ -599,6 +599,7 @@
 				handleClose(tag) {
 					this.memorySetting.dynamicTags.splice(this.memorySetting.dynamicTags.indexOf(tag), 1);
 					this.saveMemorySetting();
+					this.changeAnother();
 				},
 				//显示标签新增输入框
 				showInput() {
@@ -624,6 +625,7 @@
 					};
 					this.inputVisible = false;
 					this.inputValue = '';
+					this.changeAnother();
 				},
 				//题目格式转换
 				convertQuestion(question) {
