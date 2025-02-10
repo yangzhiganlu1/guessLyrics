@@ -98,8 +98,6 @@
 
 		}
 
-
-
 		.dashed-line {
 			border-top: 1px dashed #ccc;
 			/* 虚线样式 */
@@ -108,10 +106,9 @@
 		}
 
 		.box-container {
-
 			display: flex;
 			flex-wrap: wrap;
-			width: 90%;
+			width: 100%;
 			margin: 0;
 			border: 0px solid #ccc;
 			padding: 0px;
@@ -633,7 +630,7 @@
 					let title = this.cleanString(question.name).trim();
 					let singer = this.cleanString(question.singer).trim();
 					//截取前80行
-					let lyricDetail = question.lyric.filter(f => _this.cleanString(f, singer) != '').slice(0, 80);
+					let lyricDetail = question.lyric.filter(f => _this.cleanString(f, question.singer) != '').slice(0, 80);
 					//将歌名转换为数组
 					this.currentSongSetting.titleLetters = title.split('').map(char => ({
 						letter: char.toString(),
@@ -711,6 +708,10 @@
 				//去除空格字母数字汉字之外的字符
 				cleanString(input, singer) {
 					if (!input) return '';
+					//去掉歌词里有歌手名字的行
+					if (singer && input.includes(singer)) return '';
+					// 去掉所有的.
+					// input = this.replaceCharacter(input, '.');
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
 					input = input.replace(/[^a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
 					//一些字和符号直接删掉
@@ -723,8 +724,7 @@
 					input = input.replace(/^\s+/, '');
 					//一个英文的话 删掉
 					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
-					//去掉歌词里有歌手名字的行
-					if (singer && input.includes(singer)) return '';
+					
 					//去掉没用的行
 					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')) return '';
 					input = this.replaceCharacter(input);
@@ -1000,7 +1000,7 @@
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					switch (this.getCurrentDate()) {
 						case 20250210:
-							index = 1319;
+							index = 14447;
 							break;
 						default:
 							break;
