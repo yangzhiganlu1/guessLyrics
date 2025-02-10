@@ -169,7 +169,7 @@
 		}
 
 		.green {
-			color: rgb(142, 204, 149);
+			color: rgb(142, 204, 106);
 		}
 
 		.boxstyleauto {
@@ -498,6 +498,7 @@
 				}
 				//查看每日挑战做完了没
 				else if (!this.everyDaySetting.success) {
+					this.currentSongSetting.success = false;
 					this.currentSongSetting = JSON.parse(JSON.stringify(this.everyDaySetting));
 					this.clickEveryDay();
 				}
@@ -724,7 +725,7 @@
 					input = input.replace(/^\s+/, '');
 					//一个英文的话 删掉
 					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
-					
+
 					//去掉没用的行
 					if (input.includes('编曲') || input.includes('作曲') || input.includes('作词')) return '';
 					input = this.replaceCharacter(input);
@@ -1000,8 +1001,10 @@
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					switch (this.getCurrentDate()) {
 						case 20250210:
-							index = 14447;
+							index = 6570;
 							break;
+						case 20250211:
+							index = 14447;
 						default:
 							break;
 					}
