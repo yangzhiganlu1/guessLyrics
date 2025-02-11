@@ -51,6 +51,10 @@
 
 		/* 针对手机端（宽度小于或等于 768px） */
 		@media (max-width: 768px) {
+			.titless {
+				font-size: 1.2em !important;
+			}
+
 			body {
 				padding: 5px;
 				margin: 0 10px;
@@ -258,13 +262,9 @@
 			<button @click="changeAnother">换一首</button>
 			<button @click="addTips" style="margin-left: 10px;">加点提示</button>
 
-			<button @click="showSingerSetting=!showSingerSetting;showSearchSong=false;" style="margin-left: 10px;">
-				选歌手
+			<button @click="showSingerSetting=!showSingerSetting;" style="margin-left: 10px;">
+				设置
 				<i class="el-icon-arrow-down" v-if="!showSingerSetting"></i>
-				<i class="el-icon-arrow-up" v-else></i>
-			</button>
-			<button @click="showSearchSong=!showSearchSong;showSingerSetting=false;" style="margin-left: 10px;">搜歌
-				<i class="el-icon-arrow-down" v-if="!showSearchSong"></i>
 				<i class="el-icon-arrow-up" v-else></i>
 			</button>
 
@@ -279,34 +279,45 @@
 		</div>
 		<!-- 歌手选择 -->
 		<div v-if="showSingerSetting">
-			<el-radio v-model="memorySetting.singerMode" label="all">我全都要！</el-radio>
-			<el-radio v-model="memorySetting.singerMode" label="diy">我自己选~ （可以自己加歌手）</el-radio>
-			<div v-if="memorySetting.singerMode=='diy'" style="margin-top: 10px;">
-				<el-tag :key="tag" v-for="tag in memorySetting.dynamicTags" closable :disable-transitions="false"
-					@close="handleClose(tag)" style="margin: 5px;">
-					{{tag}}
-				</el-tag>
-				<el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
-					@keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm" style="margin: 5px;"
-					style="margin: 5px;">
-				</el-input>
-				<el-button v-else class="button-new-tag" size="small" @click="showInput" style="margin: 5px;">+ 新增
-				</el-button>
+			<div>
+				<div style="display: flex;align-items: center;">
+					<div style="padding-bottom: 5px;">歌手范围：</div>
+					<el-radio v-model="memorySetting.singerMode" label="all">我全都要！</el-radio>
+					<el-radio v-model="memorySetting.singerMode" label="diy">我自己选~ </el-radio>
+				</div>
+				<div v-if="memorySetting.singerMode=='diy'" style="margin-top: 10px;">
+					<el-tag :key="tag" v-for="tag in memorySetting.dynamicTags" closable :disable-transitions="false"
+						@close="handleClose(tag)" style="margin: 5px;">
+						{{tag}}
+					</el-tag>
+					<el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput"
+						size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"
+						style="margin: 5px;" style="margin: 5px;">
+					</el-input>
+					<el-button v-else class="button-new-tag" size="small" @click="showInput" style="margin: 5px;">+ 新增
+					</el-button>
+				</div>
 			</div>
-
 			<!-- <div style="margin-top: 10px;">
 				<button @click="showSingerSetting=false">收起</button>
 			</div> -->
 			<div class="dashed-line"></div>
-		</div>
-		<!-- 搜歌 -->
-		<div v-if="showSearchSong" class="search-dialog">
-			<div style="display: flex;align-items: center;flex-wrap: nowrap;">ID　<el-input class="input-new-tag"
+			<div style="display: flex;align-items: center;">简单模式
+
+				<el-switch v-model="memorySetting.easyMode" active-color="#1484cb" @change="easyChange"
+					inactive-color="grey" style="margin-left: 5px;">
+				</el-switch>
+
+				<el-slider @change="sliderChange" :disabled="!memorySetting.easyMode" v-model="memorySetting.easyFactor"
+					:min="10" :max="100" style="width: 60%;margin-left: 20px;">
+			</div>
+			<div class="dashed-line"></div>
+			<!-- <div style="display: flex;align-items: center;flex-wrap: nowrap;">ID　<el-input class="input-new-tag"
 					v-model="inputForID" size="small" style="margin: 5px;width: 25%;" clearable>
 				</el-input>
 				<el-button class="button-new-tag" size="small" @click="jumpBySongID(inputForID)"
 					style="margin: 5px;">切换</el-button>
-			</div>
+			</div> -->
 			<div style="display: flex;align-items: center;flex-wrap: nowrap;">歌手 <el-input class="input-new-tag"
 					v-model="searchParam.singer" size="small" style="margin: 5px;width: 25%;" clearable>
 				</el-input>
@@ -330,8 +341,9 @@
 				<div v-if="overLimit" style="color: #52976B;">还有...懒得显示了...</div>
 			</div>
 			<div v-else-if="cantSearch">查不到...！！！</div>
-
+			<div class="dashed-line"></div>
 		</div>
+
 
 		<!--主页  -->
 		<div style="position: sticky;top:0;background-color: white;padding-bottom: 15px;">
@@ -371,7 +383,7 @@
 
 
 		<!--  歌名：-->
-		<h2 style="margin-bottom: 5px;margin-top: 0px;">歌名：</h2>
+		<h2 style="margin-bottom: 5px;margin-top: 0px;" class="titless">歌名：</h2>
 		<div class="box-container" :class="{ cantcopy:!currentSongSetting.success }">
 			<div class="box" v-for="(letter, index) in currentSongSetting.titleLetters" :key="index"
 				:class="{ blank:letter.blank,unrevealed:letter.blank?true:!letter.revealed,revealed: letter.blank?false:letter.revealed,auto:letter.revealed?false:letter.auto, }">
@@ -379,7 +391,7 @@
 			</div>
 		</div>
 		<!--  歌手：-->
-		<h2 style="margin-bottom: 5px;margin-top: 5px;">歌手：</h2>
+		<h2 style="margin-bottom: 5px;margin-top: 5px;" class="titless">歌手：</h2>
 		<div class="box-container" :class="{ cantcopy:!currentSongSetting.success }">
 			<div class="box" v-for="(letter, index) in currentSongSetting.singerLetters" :key="index"
 				:class="{ blank:letter.blank,unrevealed:letter.blank?true:!letter.revealed,revealed: letter.blank?false:letter.revealed,auto:letter.revealed?false:letter.auto, }">
@@ -387,7 +399,7 @@
 			</div>
 		</div>
 		<!-- 歌词 -->
-		<h2 style="margin-bottom: 5px;margin-top: 5px;">歌词：</h2>
+		<h2 style="margin-bottom: 5px;margin-top: 5px;" class="titless">歌词：</h2>
 		<div class="box-container" :class="{ cantcopy:!currentSongSetting.success }">
 			<div v-for="(line, index) in currentSongSetting.lyricLetters" :key="index"
 				style="display: flex;width: 100%;flex-wrap: wrap;flex-direction: row;">
@@ -431,7 +443,7 @@
 				centerDialogVisible: false,
 				overLimit: false,
 				showSingerSetting: false,
-				showSearchSong: false,
+				showSingerSetting: false,
 				inputVisible: false,
 				cantSearch: false,
 				inputLetter: '',
@@ -447,6 +459,8 @@
 				memorySetting: {
 					singerMode: 'all',
 					dynamicTags: ['王菲', '张惠妹', '蔡依林', '周杰伦', '林俊杰', '陈奕迅'],
+					easyMode: false,
+					easyFactor: 30
 				},
 				currentSongSetting: {
 					success: false,
@@ -498,6 +512,8 @@
 				}
 				const params = this.getQueryParams();
 				// console.log(params)
+
+				//分情况加载题目
 				if (params?.songID) {
 					this.jumpBySongID(params?.songID);
 				}
@@ -527,6 +543,21 @@
 				window.removeEventListener('scroll', this.handleScroll);
 			},
 			methods: {
+				sliderChange(value) {
+					// console.log(value)
+					if (value) {
+						this.resetGuess()
+						this.showHalfAnswer()
+					}
+				},
+				//简单模式开关
+				easyChange(value) {
+
+					if (value) this.showHalfAnswer()
+					else {
+						this.resetGuess()
+					}
+				},
 				//禁止下拉刷新
 				handleScroll(event) {
 					if (window.scrollY === 0 && event.deltaY < 0) {
@@ -550,6 +581,7 @@
 					let index = this.blackIndex();
 					this.currentSongSetting.isEveryDayMode = index == id ? true : false;
 					this.currentSongSetting.isEveryDayMode ? this.clickEveryDay() : this.setQuestion('custom', id);
+					if (this.memorySetting.easyMode) this.showHalfAnswer()
 				},
 				//切歌
 				switchSong(index) {
@@ -563,7 +595,7 @@
 						singer: '',
 						song: ''
 					};
-					this.showSearchSong = false;
+					this.showSingerSetting = false;
 					this.showMessage('已切换~');
 					this.resetGuess();
 				},
@@ -714,6 +746,7 @@
 					this.currentSongSetting.isEveryDayMode = false;
 					this.setQuestion();
 					this.resetGuess();
+					if (this.memorySetting.easyMode) this.showHalfAnswer()
 				},
 				//去除空格字母数字汉字之外的字符
 				cleanString(input, singer) {
@@ -821,6 +854,7 @@
 						letter.revealed = false;
 						letter.auto = false;
 					}); // 清除已显示的歌手
+					if (this.memorySetting.easyMode) this.showHalfAnswer()
 				},
 				//清空输入框
 				clearInput() {
@@ -830,7 +864,7 @@
 					// console.log(inputElement);  // 获取输入框的值
 					this.$nextTick(() => {
 						const inputElement = this.$refs.guessInput.$el.querySelector('input');
-						console.log(inputElement);  // 检查是否获取到了 input 元素
+						// console.log(inputElement);  // 检查是否获取到了 input 元素
 						inputElement.focus();  // 聚焦到输入框
 					});
 				},
@@ -1037,6 +1071,72 @@
 						}
 					}); // 显示全部歌手
 				},
+				//显示一半答案
+				showHalfAnswer() {
+					const _this = this;
+					this.wrongMessage = '';
+					let string = '';
+					this.currentSongSetting.lyricLetters.forEach(
+						(line) => {
+							line.forEach(letter => {
+								if (!_this.isBlank(letter) && !letter.revealed && !string.includes(letter.letter)) {
+									string += letter.letter;
+								}
+							})
+						}
+					);
+					// 将字符串转换为数组
+					let letterArray = string.split('');
+					// Fisher-Yates 洗牌算法
+					for (let i = letterArray.length - 1; i > 0; i--) {
+						const j = Math.floor(Math.random() * (i + 1));
+						[letterArray[i], letterArray[j]] = [letterArray[j], letterArray[i]]; // 交换
+					}
+					// 将打乱后的字符数组重新转换为字符串
+					string = letterArray.join('');
+					// 计算字符串长度并取前一半
+					const halfLength = Math.floor(string.length * Number(this.memorySetting.easyFactor) / 100);
+					string = string.substring(0, halfLength);
+					this.currentSongSetting.titleLetters.forEach(f => {
+						string = this.replaceCharacter(string, f.letter);
+					})
+					string = string.split('');
+					string.forEach(guessValue => {
+						let lower = guessValue;
+						let upper = guessValue;
+						if (/^[a-zA-Z]+$/.test(guessValue)) {
+							lower = guessValue.toLowerCase();
+							upper = guessValue.toUpperCase();
+						}
+						this.currentSongSetting.titleLetters.forEach(letter => {
+							if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
+								if (!letter.revealed && !letter.blank) {
+									letter.auto = true;
+								}
+							}
+						});
+						this.currentSongSetting.singerLetters.forEach(letter => {
+							if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
+								if (!letter.revealed && !letter.blank) {
+									letter.auto = true;
+								}
+							}
+						});
+						this.currentSongSetting.lyricLetters.forEach(line => {
+							line.forEach(letter => {
+								if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
+									if (!letter.revealed && !letter.blank) {
+										letter.auto = true;
+									}
+								}
+							});
+						});
+					})
+					// 清空输入框
+					this.clearInput();
+					//加缓存
+					this.saveMemorySetting()
+				},
 				//每日挑战
 				clickEveryDay() {
 					//获取今日ID
@@ -1049,16 +1149,19 @@
 					else {
 						this.currentSongSetting = JSON.parse(JSON.stringify(this.everyDaySetting));
 					}
+					if (this.memorySetting.easyMode) this.showHalfAnswer()
 					this.currentSongSetting.isEveryDayMode = true;
 				},
+				//黑箱每日
 				blackIndex() {
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					switch (this.getCurrentDate()) {
-						case 20250210:
-							index = 10664;
-							break;
 						case 20250211:
-							index = 3509;
+							index = 18628;
+							break;
+						case 20250212:
+							index = 18959;
+							break;
 						default:
 							break;
 					}
@@ -1066,7 +1169,7 @@
 				},
 				//分享战绩
 				clickShare() {
-					navigator.clipboard.writeText(`⭐猜歌词Plus⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
+					navigator.clipboard.writeText(`⭐猜歌词Plus${this.memorySetting.easyMode ? '[简单版]' : ''}⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
 					this.showMessage('已复制到剪贴板~')
 					this.centerDialogVisible = false;
 				},
@@ -1084,7 +1187,6 @@
 					let a = 1103515245;
 					let c = 12345;
 					let currentSeed = seed;
-
 					return function () {
 						currentSeed = (a * currentSeed + c) % m;
 						return currentSeed / m; // 返回 [0, 1) 之间的随机数
