@@ -768,40 +768,17 @@
 					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
 
 					//去掉没用的行
+					const keywords = [
+						'编曲', '作曲', '作词', '词 ', '曲 ', '词曲', '制作人', '改编',
+						'OP：', '曲：', 'SP：', '配唱制作', '录音', '编辑：', '吉他：',
+						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写',
+						'乐谱：', '混音', '母带', '制作：', '配唱', '和音：', '小号：',
+						'提琴：', 'Bass：', 'Vocal edite：', '版权','小号 ','设计','总监'
+					];
+
+					const containsKeyword = keywords.some(keyword => input.includes(keyword));
 					if (
-						input.includes('编曲')
-						|| input.includes('作曲')
-						|| input.includes('作词')
-						|| input.includes('词 ')
-						|| input.includes('曲 ')
-						|| input.includes('词曲')
-						|| input.includes('制作人')
-						|| input.includes('改编')
-						|| input.includes('OP：')
-						|| input.includes('曲：')
-						|| input.includes('SP：')
-						|| input.includes('配唱制作')
-						|| input.includes('录音')
-						|| input.includes('编辑：')
-						|| input.includes('吉他：')
-						|| input.includes('吉他 ')
-						|| input.includes('出品')
-						|| input.includes('贝斯：')
-						|| input.includes('鼓：')
-						|| input.includes('监制')
-						|| input.includes('弦乐')
-						|| input.includes('编写')
-						|| input.includes('乐谱：')
-						|| input.includes('混音')
-						|| input.includes('母带')
-						|| input.includes('制作：')
-						|| input.includes('配唱')
-						|| input.includes('和音：')
-						|| input.includes('小号：')
-						|| input.includes('提琴：')
-						|| input.includes('Bass：')
-						|| input.includes('Vocal edite：')
-						|| input.includes('版权')
+						containsKeyword
 					) return '';
 					input = this.replaceCharacter(input);
 					return input;
