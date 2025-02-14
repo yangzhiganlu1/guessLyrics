@@ -751,9 +751,6 @@
 				//去除空格字母数字汉字之外的字符
 				cleanString(input, singer) {
 					if (!input) return '';
-					//去掉歌词里有歌手名字的行
-					if (singer && input.includes(singer)) return '';
-
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
 					input = input.replace(/[^a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
 					//一些字和符号直接删掉
@@ -769,20 +766,6 @@
 					if (input.length <= 4 && /[：:]/.test(input.charAt(input.length - 1))) {
 						return ''; // 返回空字符串
 					}
-
-					//去掉没用的行
-					const keywords = [
-						'编曲', '作曲', '作词', '词 ', '曲 ', '词曲', '制作人', '改编', '乐谱：',
-						'OP', '曲：', 'SP', '配唱制作', '录音', '编辑：', '吉他：', '人声',
-						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓',
-						'乐谱', '混音', '母带', '制作：', '配唱', '和音：', '小号：',
-						'提琴：', 'Bass：', 'Vocal edite：', '版权', '小号 ', '设计', '总监', '统筹'
-					];
-
-					const containsKeyword = keywords.some(keyword => input.includes(keyword));
-					if (
-						containsKeyword
-					) return '';
 					input = this.replaceCharacter(input);
 					return input;
 				},
@@ -1136,11 +1119,9 @@
 				blackIndex() {
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					switch (this.getCurrentDate()) {
-						case 20250211:
-							index = 569;
-							break;
+						
 						case 20250214:
-							index = 13034;
+							index = 3125;
 							break;
 						default:
 							break;
