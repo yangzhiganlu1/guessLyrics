@@ -766,14 +766,17 @@
 					input = input.replace(/^\s+/, '');
 					//一个英文的话 删掉
 					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
+					if (input.length <= 4 && /[：:]/.test(input.charAt(input.length - 1))) {
+						return ''; // 返回空字符串
+					}
 
 					//去掉没用的行
 					const keywords = [
-						'编曲', '作曲', '作词', '词 ', '曲 ', '词曲', '制作人', '改编','乐谱：',
-						'OP', '曲：', 'SP', '配唱制作', '录音', '编辑：', '吉他：','人声',
-						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写','贝斯','鼓',
+						'编曲', '作曲', '作词', '词 ', '曲 ', '词曲', '制作人', '改编', '乐谱：',
+						'OP', '曲：', 'SP', '配唱制作', '录音', '编辑：', '吉他：', '人声',
+						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓',
 						'乐谱', '混音', '母带', '制作：', '配唱', '和音：', '小号：',
-						'提琴：', 'Bass：', 'Vocal edite：', '版权','小号 ','设计','总监'
+						'提琴：', 'Bass：', 'Vocal edite：', '版权', '小号 ', '设计', '总监', '统筹'
 					];
 
 					const containsKeyword = keywords.some(keyword => input.includes(keyword));
@@ -1136,8 +1139,8 @@
 						case 20250211:
 							index = 569;
 							break;
-						case 20250212:
-							index = 17327;
+						case 20250214:
+							index = 13034;
 							break;
 						default:
 							break;
