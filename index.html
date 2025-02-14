@@ -509,6 +509,7 @@
 					this.everyDaySetting = JSON.parse(everyDaySetting);
 				} else {
 					this.everyDaySetting.guessDate = this.getCurrentDate()
+					this.resetGuess();
 				}
 				const params = this.getQueryParams();
 				// console.log(params)
