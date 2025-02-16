@@ -187,7 +187,7 @@
 		}
 
 		.blank {
-			color: rgba(0, 0, 0, 0);
+			color: rgba(0, 0, 0);
 			background-color: rgba(0, 0, 0, 0);
 			border: 0px solid white;
 		}
@@ -753,7 +753,7 @@
 				cleanString(input, singer) {
 					if (!input) return '';
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
-					input = input.replace(/[^a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
+					input = input.replace(/[^：、.·a-zA-Z0-9'“”"<>《》\s\u4e00-\u9fa5]/g, ' ');
 					//一些字和符号直接删掉
 					input = this.replaceCharacters(input);
 					//校正异常空格
@@ -970,7 +970,8 @@
 				//判定是否为空格
 				isBlank(char) {
 					// console.log(char, /^\s*$/.test(char));
-					return /^\s*$/.test(char);
+					// return /^\s*$/.test(char);
+					return /^\s*$|^[.·：、]$/.test(char);
 				},
 				//检查空格是否异常
 				checkAndFixStringSpacing(str) {
