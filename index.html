@@ -544,6 +544,63 @@
 				window.removeEventListener('scroll', this.handleScroll);
 			},
 			methods: {
+				//黑箱每日
+				blackIndex() {
+					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
+					switch (this.getCurrentDate()) {
+						case 20250220:
+							index = 24554;
+							break;
+						case 20250221:
+							index = 24559;
+							break;
+						case 20250224:
+							index = 24563;
+							break;
+						case 20250225:
+							index = 18356;
+							break;
+
+						default:
+							break;
+					}
+					return index;
+				},
+				//去除空格字母数字汉字之外的字符
+				cleanString(input, singer) {
+					if (!input) return '';
+					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
+					input = input.replace(/[^：、.·a-zA-Z0-9'“”"<>《》？！～\s\u4e00-\u9fa5]/g, ' ');
+					//一些字和符号直接删掉
+					input = this.replaceCharacters(input);
+					//校正异常空格
+					input = this.checkAndFixStringSpacing(input);
+					// 将连续三个及以上的空格替换为一个空格
+					input = input.replace(/\s{3,}/g, ' ');
+					// 去掉开头的所有空格
+					input = input.replace(/^\s+/, '');
+					//一个英文的话 删掉
+					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
+					if (input.length <= 4 && /[：:]/.test(input.charAt(input.length - 1))) {
+						return ''; // 返回空字符串
+					}
+					const keywords = [
+						'编曲 ', '作曲', '作词', '词 ', '曲 ', '词曲 ', '制作人', '改编', '乐谱：',
+						'OP', '曲：', '词：', 'SP', '配唱制作', '录音', '编辑：', '吉他：', '人声',
+						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓 ', '主唱', '同步',
+						'乐谱 ', '混音', '母带', '制作 ', '配唱', '和音：', '小号：',
+						'提琴：', 'Bass：', 'Vocal edite：', '版权 ', '小号 ', '设计 ', '总监', '统筹', 'Violin：', 'A&R：', '企划', '文案', 'Viola：', 'Cello：', '录制：', '发行', 'by：'
+					];
+					// 检查是否包含关键词
+					for (const keyword of keywords) {
+						if (input.includes(keyword)) {
+							return ''; // 如果包含关键词，返回空字符串，表示这一行歌词应被删除
+						}
+					}
+					input = this.replaceCharacter(input);
+					return input;
+				},
+
 				sliderChange(value) {
 					// console.log(value)
 					if (value) {
@@ -749,40 +806,7 @@
 					this.resetGuess();
 					if (this.memorySetting.easyMode) this.showHalfAnswer()
 				},
-				//去除空格字母数字汉字之外的字符
-				cleanString(input, singer) {
-					if (!input) return '';
-					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
-					input = input.replace(/[^：、.·a-zA-Z0-9'“”"<>《》？！～\s\u4e00-\u9fa5]/g, ' ');
-					//一些字和符号直接删掉
-					input = this.replaceCharacters(input);
-					//校正异常空格
-					input = this.checkAndFixStringSpacing(input);
-					// 将连续三个及以上的空格替换为一个空格
-					input = input.replace(/\s{3,}/g, ' ');
-					// 去掉开头的所有空格
-					input = input.replace(/^\s+/, '');
-					//一个英文的话 删掉
-					if (input.length == 1 && /^[a-zA-Z0-9]+$/.test(input)) return '';
-					if (input.length <= 4 && /[：:]/.test(input.charAt(input.length - 1))) {
-						return ''; // 返回空字符串
-					}
-					const keywords = [
-						'编曲 ', '作曲', '作词', '词 ', '曲 ', '词曲 ', '制作人', '改编', '乐谱：',
-						'OP', '曲：', '词：', 'SP', '配唱制作', '录音', '编辑：', '吉他：', '人声',
-						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓 ','主唱','同步',
-						'乐谱 ', '混音', '母带', '制作 ', '配唱', '和音：', '小号：',
-						'提琴：', 'Bass：', 'Vocal edite：', '版权 ', '小号 ', '设计 ', '总监', '统筹', 'Violin：', 'A&R：', '企划', '文案', 'Viola：', 'Cello：', '录制：', '发行', 'by：'
-					];
-					// 检查是否包含关键词
-					for (const keyword of keywords) {
-						if (input.includes(keyword)) {
-							return ''; // 如果包含关键词，返回空字符串，表示这一行歌词应被删除
-						}
-					}
-					input = this.replaceCharacter(input);
-					return input;
-				},
+
 				//复制链接
 				copyURL() {
 					navigator.clipboard.writeText(`https://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
@@ -1130,24 +1154,7 @@
 					if (this.memorySetting.easyMode) this.showHalfAnswer()
 					this.currentSongSetting.isEveryDayMode = true;
 				},
-				//黑箱每日
-				blackIndex() {
-					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
-					switch (this.getCurrentDate()) {
-						case 20250220:
-							index = 24554;
-							break;
-						case 20250221:
-							index = 24559;
-							break;
-						case 20250224:
-							index = 18356;
-							break;
-						default:
-							break;
-					}
-					return index;
-				},
+
 				//分享战绩
 				clickShare() {
 					navigator.clipboard.writeText(`⭐猜歌词Plus${this.memorySetting.easyMode ? '[简单版]' : ''}⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
