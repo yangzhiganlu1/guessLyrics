@@ -569,6 +569,7 @@
 				//去除空格字母数字汉字之外的字符
 				cleanString(input, singer) {
 					if (!input) return '';
+					input = removeDoubleParentheses(input);
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
 					input = input.replace(/[^：、.·a-zA-Z0-9'“”"<>《》？！～\s\u4e00-\u9fa5]/g, ' ');
 					//一些字和符号直接删掉
@@ -589,7 +590,8 @@
 						'OP', '曲：', '词：', 'SP', '配唱制作', '录音', '编辑：', '吉他：', '人声',
 						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓 ', '主唱', '同步',
 						'乐谱 ', '混音', '母带', '制作 ', '配唱', '和音：', '小号：',
-						'提琴：', 'Bass：', 'Vocal edite：', '版权 ', '小号 ', '设计 ', '总监', '统筹', 'Violin：', 'A&R：', '企划', '文案', 'Viola：', 'Cello：', '录制：', '发行', 'by：'
+						'提琴：', 'Bass：', 'Vocal edite：', '版权 ', '小号 ', '设计 ', '总监', '统筹', 'Violin：', 'A&R：', '企划', '文案', 'Viola：', 'Cello：', '录制：', '发行', 'by：',
+						"："
 					];
 					// 检查是否包含关键词
 					for (const keyword of keywords) {
@@ -1191,6 +1193,10 @@
 
 			}
 		});
+		function removeDoubleParentheses(text) {
+    // 删除成对的中英文括号及其内容
+    return text.replace(/\(.*?\)|（.*?）/g, '').trim();
+}
 	</script>
 
 </body>
