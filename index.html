@@ -568,6 +568,11 @@
 				},
 				//去除空格字母数字汉字之外的字符
 				cleanString(input, singer) {
+					if(singer){
+						if(input.includes(`- ${singer}`)){
+							return '';
+						}
+					}
 					if (!input) return '';
 					input = removeDoubleParentheses(input);
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
