@@ -548,35 +548,40 @@
 				blackIndex() {
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					switch (this.getCurrentDate()) {
-
-						case 20250224:
-							index = 24563;
-							break;
 						case 20250225:
 							index = 18356;
 							break;
 						case 20250226:
 							index = 24593;
-							break; 
-							case 20250227:
+							break;
+						case 20250227:
 							index = 24594;
+							break;
+						case 20250228:
+							index = 25083;
 							break;
 						default:
 							break;
 					}
 					return index;
 				},
+				//判定是否为空格
+				isBlank(char) {
+					// console.log(char, /^\s*$/.test(char));
+					// return /^\s*$/.test(char);
+					return /^\s*$|^[.·：、？！～~]$/.test(char);
+				},
 				//去除空格字母数字汉字之外的字符
 				cleanString(input, singer) {
-					if(singer){
-						if(input.includes(`- ${singer}`)){
+					if (singer) {
+						if (input.includes(`- ${singer}`)) {
 							return '';
 						}
 					}
 					if (!input) return '';
 					input = removeDoubleParentheses(input);
 					// 使用正则表达式匹配需要保留的字符————保留中英文和数字和空格
-					input = input.replace(/[^：、.·a-zA-Z0-9'“”"<>《》？！～\s\u4e00-\u9fa5]/g, ' ');
+					input = input.replace(/[^：、.·a-zA-Z0-9'“”"<>《》？！～~\s\u4e00-\u9fa5]/g, ' ');
 					//一些字和符号直接删掉
 					input = this.replaceCharacters(input);
 					//校正异常空格
@@ -1011,12 +1016,7 @@
 
 					return params;
 				},
-				//判定是否为空格
-				isBlank(char) {
-					// console.log(char, /^\s*$/.test(char));
-					// return /^\s*$/.test(char);
-					return /^\s*$|^[.·：、？！～]$/.test(char);
-				},
+				
 				//检查空格是否异常
 				checkAndFixStringSpacing(str) {
 					// 如果字符串长度小于等于3，直接返回原字符串
@@ -1199,9 +1199,9 @@
 			}
 		});
 		function removeDoubleParentheses(text) {
-    // 删除成对的中英文括号及其内容
-    return text.replace(/\(.*?\)|（.*?）/g, '').trim();
-}
+			// 删除成对的中英文括号及其内容
+			return text.replace(/\(.*?\)|（.*?）/g, '').trim();
+		}
 	</script>
 
 </body>
