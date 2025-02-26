@@ -547,10 +547,8 @@
 				//黑箱每日
 				blackIndex() {
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
+					//"来自生菜点歌～",
 					switch (this.getCurrentDate()) {
-						case 20250225:
-							index = 18356;
-							break;
 						case 20250226:
 							index = 24593;
 							break;
@@ -559,6 +557,12 @@
 							break;
 						case 20250228:
 							index = 25083;
+							break;
+						case 20250303:
+							index = 2705;
+							break;
+						case 20250304:
+							index = 2848;
 							break;
 						default:
 							break;
@@ -598,7 +602,7 @@
 					const keywords = [
 						'编曲 ', '作曲', '作词', '词 ', '曲 ', '词曲 ', '制作人', '改编', '乐谱：',
 						'OP', '曲：', '词：', 'SP', '配唱制作', '录音', '编辑：', '吉他：', '人声',
-						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓 ', '主唱', '同步','旁边',
+						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓 ', '主唱', '同步', '旁边',
 						'乐谱 ', '混音', '母带', '制作 ', '配唱', '和音：', '小号：',
 						'提琴：', 'Bass：', 'Vocal edite：', '版权 ', '小号 ', '设计 ', '总监', '统筹', 'Violin：', 'A&R：', '企划', '文案', 'Viola：', 'Cello：', '录制：', '发行', 'by：',
 						"："
@@ -1016,7 +1020,7 @@
 
 					return params;
 				},
-				
+
 				//检查空格是否异常
 				checkAndFixStringSpacing(str) {
 					// 如果字符串长度小于等于3，直接返回原字符串
