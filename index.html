@@ -244,17 +244,27 @@
 		<div v-if="visible" class="fixed-message">
 			{{ message }}
 		</div>
-		<div style="display: flex;align-items: center;justify-content: space-between;">
+		<!-- 标题栏 -->
+		<div class="biaotilan"
+			style="display: flex;align-items: center;justify-content: space-between;position: relative;">
 			<div style="display: flex;align-items: center;">
-				<h1 style="margin-bottom: 5px;margin-top: 5px;">猜歌名Plus</h1>
+				<h1 style="margin-bottom: 5px;margin-top: 5px;" @click="copyURL">猜歌名Plus</h1>
 				<div @click="copyURL" style="cursor: pointer;"><el-tag type="info" v-if="currentSongSetting.songID!='' "
 						effect="plain" size="mini" style="margin-left: 10px;">{{currentSongSetting.songID}}</el-tag>
 				</div>
 
 			</div>
+			<div style="display: flex;">
+				
+				<a href="https://yangzhiganlu1.github.io/guessPoetry/" target="_blank">
+					<img src="./poetry.png" alt="去猜诗词" style="width: 30px;margin-right: 7px;">
+				</a>
 
-			<el-tag type="success" v-if="currentSongSetting.isEveryDayMode" style="margin-right: 2px;">每日挑战</el-tag>
-			<el-tag v-if="!currentSongSetting.isEveryDayMode" style="margin-right: 2px;">随机模式</el-tag>
+
+			<el-tag type="success" v-if="currentSongSetting.isEveryDayMode" style="margin-right: 2px;">每日</el-tag>
+			<el-tag v-if="!currentSongSetting.isEveryDayMode" style="margin-right: 2px;">随机</el-tag></div>
+			
+
 		</div>
 
 		<!-- 按钮组 -->
@@ -356,7 +366,7 @@
 				<el-input v-model="inputLetter" ref="guessInput" maxlength="1" clearable placeholder="只输入一个字"
 					class="input-class" style="width: 90%;margin-right: 10px;" @change="guess">
 				</el-input>
-				<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary">猜！</el-button>
+				<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary" style="padding-right: 10px;">猜！</el-button>
 			</div>
 			<div v-if="currentSongSetting.success&&!clickShowAnswer"
 				style="margin-top: 10px;display: flex;align-items: center;">
@@ -1183,7 +1193,7 @@
 
 				//分享战绩
 				clickShare() {
-					navigator.clipboard.writeText(`⭐猜歌词Plus${this.memorySetting.easyMode ? '[简单版]' : ''}⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
+					navigator.clipboard.writeText(`⭐「杨枝甘露小测验」${this.memorySetting.easyMode ? '[简单版]' : ''}#猜歌词#⭐\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
 					this.showMessage('已复制到剪贴板~')
 					this.centerDialogVisible = false;
 				},
