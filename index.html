@@ -1193,7 +1193,7 @@
 
 				//分享战绩
 				clickShare() {
-					navigator.clipboard.writeText(`「杨枝甘露小测验」${this.memorySetting.easyMode ? '[简单版]' : ''}⭐#猜歌词#\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
+					navigator.clipboard.writeText(`「杨枝甘露小测验」${this.memorySetting.easyMode ? '[简单版]' : ''}⭐~猜歌词\n${this.currentSongSetting.isEveryDayMode ? '每日挑战成功！\n' : '随机挑战成功！\n'}猜测${this.currentSongSetting.guessCount}次 提示${this.currentSongSetting.tipCount}次\nhttps://yangzhiganlu1.github.io/guessLyrics?songID=${this.currentSongSetting.songID}`);
 					this.showMessage('已复制到剪贴板~')
 					this.centerDialogVisible = false;
 				},
