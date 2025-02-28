@@ -255,15 +255,16 @@
 
 			</div>
 			<div style="display: flex;align-items: center;">
-				
+
 				<a href="https://yangzhiganlu1.github.io/guessPoetry/" target="_blank">
 					<img src="./poetry.png" alt="去猜诗词" style="width: 30px;margin-right: 7px;">
 				</a>
 
 
-			<el-tag type="success" v-if="currentSongSetting.isEveryDayMode" style="margin-right: 2px;">每日</el-tag>
-			<el-tag v-if="!currentSongSetting.isEveryDayMode" style="margin-right: 2px;">随机</el-tag></div>
-			
+				<el-tag type="success" v-if="currentSongSetting.isEveryDayMode" style="margin-right: 2px;">每日</el-tag>
+				<el-tag v-if="!currentSongSetting.isEveryDayMode" style="margin-right: 2px;">随机</el-tag>
+			</div>
+
 
 		</div>
 
@@ -366,7 +367,8 @@
 				<el-input v-model="inputLetter" ref="guessInput" maxlength="1" clearable placeholder="只输入一个字"
 					class="input-class" style="width: 90%;margin-right: 10px;" @change="guess">
 				</el-input>
-				<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary" style="padding-right: 10px;">猜！</el-button>
+				<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary"
+					style="padding-right: 10px;">猜！</el-button>
 			</div>
 			<div v-if="currentSongSetting.success&&!clickShowAnswer"
 				style="margin-top: 10px;display: flex;align-items: center;">
@@ -559,9 +561,6 @@
 					let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
 					//"来自生菜点歌～",
 					switch (this.getCurrentDate()) {
-						case 20250227:
-							index = 24594;
-							break;
 						case 20250228:
 							index = 25083;//此生不换
 							break;
@@ -578,16 +577,25 @@
 							index = 25111;//外滩十八号25111
 							break;
 						case 20250307:
-							index = 7839;//娃娃7839
+							index = 25109;//女驸马25109
 							break;
 						case 20250310:
-							index = 11412;//万物生11412
+							index = 7839;//娃娃7839
 							break;
 						case 20250311:
-							index = 25110;//樱花草25110
+							index = 25114;//恋是爱的呕吐物25114
 							break;
 						case 20250312:
-							index = 25109;//女驸马25109
+							index = 11412;//万物生11412
+							break;
+						case 20250313:
+							index = 25113;//玛卡瑞纳25113
+							break;
+						case 20250314:
+							index = 5924;//侠客行5924   
+							break;
+						case 20250317:
+							index = 25110;//樱花草25110
 							break;
 						default:
 							break;
