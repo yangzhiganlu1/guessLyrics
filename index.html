@@ -15,6 +15,10 @@
 
 	<link rel="stylesheet" href="./css/base.css">
 	<style>
+		.el-textarea__inner {
+			min-height: 40px !important;
+		}
+
 		.fixed-message {
 			position: fixed;
 			top: 20px;
@@ -323,12 +327,7 @@
 					:min="10" :max="100" style="width: 60%;margin-left: 20px;">
 			</div>
 			<div class="dashed-line"></div>
-			<!-- <div style="display: flex;align-items: center;flex-wrap: nowrap;">ID　<el-input class="input-new-tag"
-					v-model="inputForID" size="small" style="margin: 5px;width: 25%;" clearable>
-				</el-input>
-				<el-button class="button-new-tag" size="small" @click="jumpBySongID(inputForID)"
-					style="margin: 5px;">切换</el-button>
-			</div> -->
+
 			<div style="display: flex;align-items: center;flex-wrap: nowrap;">歌手 <el-input class="input-new-tag"
 					v-model="searchParam.singer" size="small" style="margin: 5px;width: 25%;" clearable>
 				</el-input>
@@ -364,8 +363,9 @@
 			</div>
 			<!-- 猜测输入框 -->
 			<div style="display: flex;width: 100%;justify-content: center;margin-top: 10px;">
-				<el-input v-model="inputLetter" ref="guessInput" maxlength="1" clearable placeholder="只输入一个字"
-					class="input-class" style="width: 90%;margin-right: 10px;" @change="guess">
+				<!--  maxlength="1"    -->
+				<el-input v-model="inputLetter" ref="guessInput" clearable placeholder="" autosize class="input-class"
+					style="width: 90%;margin-right: 10px;height: 120%;" @change="guess">
 				</el-input>
 				<el-button @click.native.prevent="guess" @keyup.native.enter="guess" type="primary"
 					style="padding-right: 10px;">猜！</el-button>
@@ -389,8 +389,8 @@
 					<i class="el-icon-share" style="margin-left: 4px;"></i>
 				</button>
 			</div>
-			<div v-if="wrongMessage" style="color:#f74f44;"> {{wrongMessage}}</div>
 			<div v-if="successMessage" style="color:#8ecc6a;"> {{successMessage}}</div>
+			<div v-if="wrongMessage" style="color:#f74f44;"> {{wrongMessage}}</div>
 		</div>
 
 
@@ -563,7 +563,7 @@
 					//85 ai呀蔡蔡发布了一篇小红书笔记，快来看吧！ 😆 YiEMQsg3JnmcUay 😆 http://xhslink.com/a/DekNjLYD6uL7，复制本条信息，打开【小红书】App查看精彩内容！
 					switch (this.getCurrentDate()) {
 						case 20250314:
-							index=4152;
+							index = 4152;
 							break;
 						case 20250317:
 							index = 20876;//特别的人20876
@@ -646,7 +646,7 @@
 						'编曲 ', '作曲', '作词', '词 ', '曲 ', '词曲 ', '制作人', '改编', '乐谱：',
 						'OP', '曲：', '词：', 'SP', '配唱制作', '录音', '编辑：', '吉他：', '人声',
 						'吉他 ', '出品', '贝斯：', '鼓：', '监制', '弦乐', '编写', '贝斯', '鼓 ', '主唱', '同步', '旁白',
-						'乐谱 ', '混音', '母带', '制作 ', '配唱', '和音：', '小号：',
+						'乐谱 ', '混音', '母带', '制作 ', '配唱', '和音：', '小号：', '乐队',
 						'提琴：', 'Bass：', 'Vocal edite：', '版权 ', '小号 ', '设计 ', '总监', '统筹', 'Violin：', 'A&R：', '企划', '文案', 'Viola：', 'Cello：', '录制：', '发行', 'by：'
 
 					];
@@ -930,82 +930,148 @@
 				},
 				//点击猜测按钮
 				guess(type) {
-					this.wrongMessage = '';
-					this.successMessage = '';
-					const guessValue = this.inputLetter.trim();
+					// this.wrongMessage = '';
+					// this.successMessage = '';
 					if (this.currentSongSetting.success) return;
-					if (!guessValue) return;
-					let lower = guessValue;
-					let upper = guessValue;
-					if (/^[a-zA-Z]+$/.test(guessValue)) {
-						lower = guessValue.toLowerCase();
-						upper = guessValue.toUpperCase();
-					}
-					// 如果猜测的是已经掀开的
-					if (this.currentSongSetting.correctGuesses.includes(guessValue)
-						|| this.currentSongSetting.correctGuesses.includes(lower) || this.currentSongSetting.correctGuesses.includes(upper)
-					) {
-						this.showMessage(`"${guessValue}"已猜过！在歌词中！`);
-						this.successMessage = `"${guessValue}"已猜过！在歌词中！`;
-						// 清空输入框
-						this.clearInput();
-						return;
-					}
-					if (this.currentSongSetting.wrongGuesses.includes(guessValue) || this.currentSongSetting.wrongGuesses.includes(lower) || this.currentSongSetting.wrongGuesses.includes(upper)) {
-						this.showMessage(`"${guessValue}"已猜过！不在歌词中！`);
-						this.wrongMessage = `"${guessValue}"已猜过！不在歌词中！`;
-						// 清空输入框
-						this.clearInput();
-						return;
-					}
-					// 增加猜测次数
-					if (type == 'tips') {
-						this.currentSongSetting.tipCount++;
-						if (this.currentSongSetting.isEveryDayMode)
-							this.currentSongSetting.everyDayTipCount++
-					}
-					else {
-						this.currentSongSetting.guessCount++;
-						if (this.currentSongSetting.isEveryDayMode)
-							this.currentSongSetting.everyDayGuessCount++;
-					}
+					let guessValue = this.inputLetter.trim();
+					guessValue = [...new Set(guessValue.replace(/\s+/g, '').split(''))].join('');
 
-					let found = false;
-					this.currentSongSetting.titleLetters.forEach(letter => {
-						if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
-							letter.revealed = true;
-							found = true;
+					if (!guessValue) return;
+					// const uniqueChars = new Set();
+					// for (const char of guessValue) {
+					// 	if (/^[a-zA-Z]$/.test(char)) {
+					// 		uniqueChars.add(char.toLowerCase());
+					// 		uniqueChars.add(char.toUpperCase());
+					// 	} else {
+					// 		uniqueChars.add(char); // 如果不是英文字符，则直接添加
+					// 	}
+					// }
+					// // 转换为字符串并去重
+					// guessValue = [...uniqueChars].join('');
+
+					let haveGuessesIn = [];
+					let haveGuessesNotIn = [];
+					let guessIn = [];
+					let guessNotIn = [];
+
+					for (let i = 0; i < guessValue.length; i++) {
+						const char = guessValue[i];
+						const lowerChar = char.toLowerCase();
+						const upperChar = char.toUpperCase();
+
+						// 检查是否已猜过且在正确猜测中
+						if (this.currentSongSetting.correctGuesses.includes(char) ||
+							this.currentSongSetting.correctGuesses.includes(lowerChar) ||
+							this.currentSongSetting.correctGuesses.includes(upperChar)) {
+							haveGuessesIn.push(char)
+
+							// this.showMessage(`${char} 已猜过！在歌词中！`);
+							// this.successMessage = `${char} 已猜过！在歌词中！`;
+
+							// 清空输入框
+							// this.clearInput();
+							continue;//还是写continue
 						}
-					});
-					this.currentSongSetting.singerLetters.forEach(letter => {
-						if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
-							letter.revealed = true;
-							found = true;
+
+						// 检查是否已猜过且在错误猜测中
+						if (this.currentSongSetting.wrongGuesses.includes(char) ||
+							this.currentSongSetting.wrongGuesses.includes(lowerChar) ||
+							this.currentSongSetting.wrongGuesses.includes(upperChar)) {
+							haveGuessesNotIn.push(char)
+							// this.showMessage(`${char} 已猜过！不在歌词中！`);
+							// this.wrongMessage = `${char} 已猜过！不在歌词中！`;
+							// 清空输入框
+							// this.clearInput();
+							continue;
 						}
-					});
-					this.currentSongSetting.lyricLetters.forEach(line => {
-						line.forEach(letter => {
-							if (letter.letter === guessValue || letter.letter === lower || letter.letter === upper) {
+						// 增加猜测次数
+						if (type == 'tips') {
+							this.currentSongSetting.tipCount++;
+							if (this.currentSongSetting.isEveryDayMode)
+								this.currentSongSetting.everyDayTipCount++
+						}
+						else {
+							this.currentSongSetting.guessCount++;
+							if (this.currentSongSetting.isEveryDayMode)
+								this.currentSongSetting.everyDayGuessCount++;
+						}
+
+						let found = false;
+						this.currentSongSetting.titleLetters.forEach(letter => {
+							if (letter.letter === char || letter.letter === lowerChar || letter.letter === upperChar) {
 								letter.revealed = true;
 								found = true;
 							}
 						});
-					});
-					if (!found) {
-						this.showMessage(`"${guessValue}" 不在歌词中`);
-						this.wrongMessage = `"${guessValue}" 不在歌词中`;
-						if (!this.currentSongSetting.wrongGuesses.includes(guessValue)) {
-							this.currentSongSetting.wrongGuesses.push(guessValue);
+
+						this.currentSongSetting.singerLetters.forEach(letter => {
+							if (letter.letter === char || letter.letter === lowerChar || letter.letter === upperChar) {
+								letter.revealed = true;
+								found = true;
+							}
+						});
+						this.currentSongSetting.lyricLetters.forEach(line => {
+							line.forEach(letter => {
+								if (letter.letter === char || letter.letter === lowerChar || letter.letter === upperChar) {
+									letter.revealed = true;
+									found = true;
+								}
+							});
+						});
+						if (!found) {
+							// this.showMessage(`"${guessValue}" 不在歌词中`);
+							// this.wrongMessage = `"${guessValue}" 不在歌词中`;
+							guessNotIn.push(char)
+
+							if (!this.currentSongSetting.wrongGuesses.includes(char)) {
+								this.currentSongSetting.wrongGuesses.push(char);
+							}
+						} else {
+							if (!this.currentSongSetting.correctGuesses.includes(char)) {
+								this.currentSongSetting.correctGuesses.push(char);
+							}
+							if (!this.checkCompleted()) {
+								// this.successMessage = `"${char}" 在歌词中!!`
+								guessIn.push(char)
+							} else {
+								this.successMessage = '';
+								this.wrongMessage = '';
+								return;
+							}
+							// this.wrongMessage = '';
 						}
-					} else {
-						if (!this.currentSongSetting.correctGuesses.includes(guessValue)) {
-							this.currentSongSetting.correctGuesses.push(guessValue);
-						}
-						if (!this.checkCompleted()) {
-							this.successMessage = `"${guessValue}" 在歌词中!!`
-						};
-						this.wrongMessage = '';
+
 					}
+					const concatenateAndSetMessage = (array, messagePrefix) => {
+						if (array.length > 0) {
+							const truncatedArray = array.length > 20 ? array.slice(0, 20).concat('...') : array;
+							const words = truncatedArray.join(' '); // 用空格连接每个字
+							return `${words} ${messagePrefix}`;
+						}
+						return '';
+					};
+
+					const haveGuessesMessage = concatenateAndSetMessage(haveGuessesIn, '已猜过！在歌词中！');
+					const guessInMessage = concatenateAndSetMessage(guessIn, '在歌词中！');
+					const haveNotGuessesMessage = concatenateAndSetMessage(haveGuessesNotIn, '已猜过！不在歌词中！');
+					const guessNotInMessage = concatenateAndSetMessage(guessNotIn, '不在歌词中！');
+
+					if (haveGuessesMessage) {
+						this.successMessage = `${this.successMessage} ${haveGuessesMessage}`.trim();
+					}
+
+					if (guessInMessage) {
+						this.successMessage = `${this.successMessage} ${guessInMessage}`.trim();
+					}
+
+					if (haveNotGuessesMessage) {
+						this.wrongMessage = haveNotGuessesMessage;
+					}
+
+					if (guessNotInMessage) {
+						this.wrongMessage = `${this.wrongMessage} ${guessNotInMessage}`.trim();
+					}
+
 					// 清空输入框
 					this.clearInput();
 					//加缓存
