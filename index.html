@@ -1056,6 +1056,9 @@
 					const haveNotGuessesMessage = concatenateAndSetMessage(haveGuessesNotIn, '已猜过！不在歌词中！');
 					const guessNotInMessage = concatenateAndSetMessage(guessNotIn, '不在歌词中！');
 
+					this.successMessage = '';
+					this.wrongMessage = '';
+					
 					if (haveGuessesMessage) {
 						this.successMessage = `${this.successMessage} ${haveGuessesMessage}`.trim();
 					}
