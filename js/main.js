@@ -12,7 +12,8 @@ new Vue({
         clickShowAnswer: false,
         loading: true,
         vipVersion: false,
-        centerDialogVisible: false,
+        centerDialogVisible: false,//普通成功提示弹框
+        badgeDialogVisible: false,//徽章成功提示弹框
         overLimit: false,
         showSingerSetting: false,
         showSingerSetting: false,
@@ -64,6 +65,11 @@ new Vue({
         canvasHeight: 600, // 画布高度（需与图片尺寸一致）
         fontLoaded: false, // 字体是否加载完成
         baseImage: null, // 基础图片对象
+        //徽章放在本地数据库
+        dbName: 'badgeDB',
+        storeName: 'badgeStore',
+        db: '',//indexDB
+        dbList: '',//indexDB读到的数据
 
     },
     watch: {
@@ -73,10 +79,12 @@ new Vue({
             // 你可以在这里添加其他逻辑，比如 API 调用或状态更新
         }
     },
-    mounted() {
+    async mounted() {
         //测试
         // this.initCanvas();
 
+        //打开数据库——openDB
+        // this.db = await openDB(this.dbName, this.storeName, 1);
 
 
         let memorySetting = localStorage.getItem('guessLyrics');
@@ -231,13 +239,13 @@ new Vue({
                     index = 25121;//鸭子25121
                     break;
                 case 20250321:
-                    index = 6451;//私奔到月球6451  
+                    index = 25116;//求神呐25116
                     break;
                 case 20250324:
                     index = 25117;//劝学25117
                     break;
                 case 20250325:
-                    index = 25116;//求神呐25116
+                    index = 6451;//私奔到月球6451
                     break;
                 case 20250326:
                     index = 21573;//净土21573
@@ -261,10 +269,13 @@ new Vue({
                     index = 25110;//樱花草25110   
                     break;
                 case 20250404:
-                    index = 25119;//上城名媛25119
+                    index = 25124;//吉祥三宝25124
                     break;
                 case 20250407:
-                    index = 5924;//侠客行5924 
+                    index = 5924;//侠客行5924   
+                    break;
+                case 20250408:
+                    index = 25119;//上城名媛25119
                     break;
                 default:
                     break;
@@ -757,17 +768,28 @@ new Vue({
         //检查是否猜出歌名
         checkCompleted() {
             if (this.currentSongSetting.titleLetters.filter(f => !f.revealed && !this.isBlank(f.letter)).length == 0) {
-                this.centerDialogVisible = true;
+                //做撒彩带特效
+                //.................
+                if (this.checkAchievement()) {
+
+                } else {
+                    //弹出普通成功弹框
+                    this.centerDialogVisible = true;
+                }
+
                 this.currentSongSetting.success = true;
                 if (this.currentSongSetting.isEveryDayMode) {
                     this.everyDaySetting.success = true;
                     this.saveMemorySetting();
-
                 }
 
                 this.showAnswer('completed');
                 return true;
             }
+            return false;
+        },
+        //检查是否解锁成就
+        checkAchievement() {
             return false;
         },
         //解析URL
