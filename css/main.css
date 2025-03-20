@@ -1,226 +1,282 @@
+@font-face {
+	font-family: 'HYPixel';
+	/* 指定字体名称 */
+	src: url('../badge/HYPixel.ttf');
+	/* 指定字体文件的路径和文件名 */
+}
 
-		.el-textarea__inner {
-			min-height: 40px !important;
-		}
+@font-face {
+	font-family: 'zpix';
+	/* 指定字体名称 */
+	src: url('../badge/zpix.ttf');
+	/* 指定字体文件的路径和文件名 */
+}
 
-		.fixed-message {
-			position: fixed;
-			top: 20px;
-			left: 0;
-			right: 0;
-			background-color: rgba(0, 0, 0, 0.8);
-			/* 背景色 */
-			color: white;
-			/* 字体颜色 */
-			text-align: center;
-			/* 文本居中 */
-			padding: 10px;
-			/* 内边距 */
-			z-index: 1000;
-			/* 确保在顶部显示 */
-		}
+@font-face {
+	font-family: 'hanchan';
+	/* 指定字体名称 */
+	src: url('../badge/hanchan.otf');
+	/* 指定字体文件的路径和文件名 */
+}
 
-		body {
-			font-family: Arial, sans-serif;
-			text-align: left;
-			background-color: #ffffff;
-			/* 背景改为白色 */
+@font-face {
+	font-family: 'fangzheng';
+	/* 指定字体名称 */
+	src: url('../badge/fangzheng.ttf');
+	/* 指定字体文件的路径和文件名 */
+}
 
-			margin-bottom: 300px;
-			height: fit-content !important;
-		}
-
-		body,
-		html {
-			height: 100%;
-			overflow: visible;
-
-		}
-
-		/* 针对手机端（宽度小于或等于 768px） */
-		@media (max-width: 768px) {
-			.titless {
-				font-size: 1.2em !important;
-			}
-
-			body {
-				padding: 5px;
-				margin: 0 10px;
-				height: fit-content;
-				padding-bottom: 100px;
-			}
-
-			.buttons>button {
-				margin: 5px;
-				font-size: 16px;
-			}
-
-			.buttons {
-				align-items: center;
-			}
-
-			.el-radio__label {
-				font-size: 16px;
-			}
-
-			.search-dialog {
-				display: flex;
-				flex-wrap: wrap;
-				align-items: center;
-			}
-
-		}
-
-		/* 针对电脑端（宽度大于 768px） */
-		@media (min-width: 769px) {
-			body {
-				padding: 20px;
-				margin: 0 25%;
-				padding-bottom: 100px;
-			}
-
-			.buttons {
-				align-items: center;
-
-			}
-
-			.buttons>button {
-				margin-top: 10px;
-			}
-
-		}
-
-		.dashed-line {
-			border-top: 1px dashed #ccc;
-			/* 虚线样式 */
-			margin: 11px 0;
-			/* 上下边距 */
-		}
-
-		.box-container {
-			display: flex;
-			flex-wrap: wrap;
-			width: 100%;
-			margin: 0;
-			border: 0px solid #ccc;
-			padding: 0px;
-			background: white;
-		}
-
-		.cantcopy {
-			user-select: none;
-			/* 禁止文本选择 */
-			pointer-events: none;
-			/* 禁止鼠标事件 */
-		}
-
-		.search-row {
-			cursor: pointer;
-			padding: 5px;
-			border-bottom: 1px dashed #ccc;
-		}
-
-		.search-row:hover {
-			background: #a9e2fc2d;
-		}
-
-		.box {
-			width: 20px;
-			height: 20px;
-			margin: 2px;
-			border: 1px solid #ccc;
-			text-align: center;
-			line-height: 20px;
-			font-size: 16px;
-		}
-
-		.unrevealed {
-			color: transparent;
-			background: #000;
-			/* 每个字的背景为黑色 */
-		}
-
-		.boxstyleunrevealed {
-			color: rgba(0, 0, 0, 0);
-			background: rgba(0, 0, 0, 0);
-			/* 每个字的背景为黑色 */
-		}
-
-		.boxstylerevealed {
-			color: white;
-			background: #006400;
-		}
-
-		.revealed {
-			color: white;
-			background: #006400;
-		}
-
-		.black {
-			color: #000
-		}
-
-		.green {
-			color: rgb(142, 204, 106);
-		}
-
-		.boxstyleauto {
-			color: black;
-			background: white;
-		}
-
-		.auto {
-			color: black !important;
-			background: white !important;
-		}
-
-		.blank {
-			color: rgba(0, 0, 0);
-			background-color: rgba(0, 0, 0, 0);
-			border: 0px solid white;
-		}
+.ceshiborder {
+	z-index: 1;
+	-webkit-text-stroke: 5px #f1b596;
+}
 
 
-		.not-found {
-			color: red;
-			margin-top: 20px;
-		}
+.ceshiziti {
+	font-family: 'hanchan';
+	font-size: 150px;
+	/* fill: rgb(202, 196, 28); */
+	font-weight: 400;
+	/* color: #fefada; */
+	/* stroke: #f2b18f;
+	stroke-width: 1px; */
 
-		.wrong-guess {
-			display: flex;
-			flex-wrap: wrap;
-			width: 300px;
-			margin: 20px auto;
-			border: 1px solid red;
-			/* 红色边框 */
-			padding: 10px;
-			background: #f08080;
-			/* 红色背景 */
-		}
 
-		.wrong-guess-box .box {
-			background: #f08080;
-			/* 猜错字的背景为红色 */
-			color: white;
-			/* 字体颜色为白色 */
+	/* font-weight: 100; */
+	color: #fdf8da;
+	position: absolute;
+	left: 20px;
+	top: 20px;
+	z-index: 2;
+	margin: 50px auto 100px;
+	font-size: 100px;
 
-		}
+}
+.canvas {
+	border: 1px solid #000;
+}
 
-		.el-tag+.el-tag {
-			margin-left: 10px;
-		}
+.el-textarea__inner {
+	min-height: 40px !important;
+}
 
-		.button-new-tag {
-			margin-left: 10px;
-			height: 32px;
-			line-height: 30px;
-			padding-top: 0;
-			padding-bottom: 0;
-		}
+.fixed-message {
+	position: fixed;
+	top: 20px;
+	left: 0;
+	right: 0;
+	background-color: rgba(0, 0, 0, 0.8);
+	/* 背景色 */
+	color: white;
+	/* 字体颜色 */
+	text-align: center;
+	/* 文本居中 */
+	padding: 10px;
+	/* 内边距 */
+	z-index: 1000;
+	/* 确保在顶部显示 */
+}
 
-		.input-new-tag {
-			width: 90px;
-			margin-left: 10px;
-			vertical-align: bottom;
-		}
-	
+body {
+	font-family: Arial, sans-serif;
+	text-align: left;
+	background-color: #ffffff;
+	/* 背景改为白色 */
+
+	margin-bottom: 300px;
+	height: fit-content !important;
+}
+
+body,
+html {
+	height: 100%;
+	overflow: visible;
+
+}
+
+/* 针对手机端（宽度小于或等于 768px） */
+@media (max-width: 768px) {
+	.titless {
+		font-size: 1.2em !important;
+	}
+
+	body {
+		padding: 5px;
+		margin: 0 10px;
+		height: fit-content;
+		padding-bottom: 100px;
+	}
+
+	.buttons>button {
+		margin: 5px;
+		font-size: 16px;
+	}
+
+	.buttons {
+		align-items: center;
+	}
+
+	.el-radio__label {
+		font-size: 16px;
+	}
+
+	.search-dialog {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+}
+
+/* 针对电脑端（宽度大于 768px） */
+@media (min-width: 769px) {
+	body {
+		padding: 20px;
+		margin: 0 25%;
+		padding-bottom: 100px;
+	}
+
+	.buttons {
+		align-items: center;
+
+	}
+
+	.buttons>button {
+		margin-top: 10px;
+	}
+
+}
+
+.dashed-line {
+	border-top: 1px dashed #ccc;
+	/* 虚线样式 */
+	margin: 11px 0;
+	/* 上下边距 */
+}
+
+.box-container {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	margin: 0;
+	border: 0px solid #ccc;
+	padding: 0px;
+	background: white;
+}
+
+.cantcopy {
+	user-select: none;
+	/* 禁止文本选择 */
+	pointer-events: none;
+	/* 禁止鼠标事件 */
+}
+
+.search-row {
+	cursor: pointer;
+	padding: 5px;
+	border-bottom: 1px dashed #ccc;
+}
+
+.search-row:hover {
+	background: #a9e2fc2d;
+}
+
+.box {
+	width: 20px;
+	height: 20px;
+	margin: 2px;
+	border: 1px solid #ccc;
+	text-align: center;
+	line-height: 20px;
+	font-size: 16px;
+}
+
+.unrevealed {
+	color: transparent;
+	background: #000;
+	/* 每个字的背景为黑色 */
+}
+
+.boxstyleunrevealed {
+	color: rgba(0, 0, 0, 0);
+	background: rgba(0, 0, 0, 0);
+	/* 每个字的背景为黑色 */
+}
+
+.boxstylerevealed {
+	color: white;
+	background: #006400;
+}
+
+.revealed {
+	color: white;
+	background: #006400;
+}
+
+.black {
+	color: #000
+}
+
+.green {
+	color: rgb(142, 204, 106);
+}
+
+.boxstyleauto {
+	color: black;
+	background: white;
+}
+
+.auto {
+	color: black !important;
+	background: white !important;
+}
+
+.blank {
+	color: rgba(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0);
+	border: 0px solid white;
+}
+
+
+.not-found {
+	color: red;
+	margin-top: 20px;
+}
+
+.wrong-guess {
+	display: flex;
+	flex-wrap: wrap;
+	width: 300px;
+	margin: 20px auto;
+	border: 1px solid red;
+	/* 红色边框 */
+	padding: 10px;
+	background: #f08080;
+	/* 红色背景 */
+}
+
+.wrong-guess-box .box {
+	background: #f08080;
+	/* 猜错字的背景为红色 */
+	color: white;
+	/* 字体颜色为白色 */
+
+}
+
+.el-tag+.el-tag {
+	margin-left: 10px;
+}
+
+.button-new-tag {
+	margin-left: 10px;
+	height: 32px;
+	line-height: 30px;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.input-new-tag {
+	width: 90px;
+	margin-left: 10px;
+	vertical-align: bottom;
+}

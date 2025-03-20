@@ -4,6 +4,7 @@ const lyricsArrayLength = lyricsArray.length;
 new Vue({
     el: '#app',
     data: {
+        showSaveButton: false, // 是否显示保存按钮
         wrongMessage: '',
         successMessage: '',
         message: '',
@@ -56,7 +57,14 @@ new Vue({
             correctGuesses: [],
             guessDate: 0,
             songID: '',
-        }
+        },
+        inputText: "", // 用户输入的文字
+        showSaveButton: false, // 是否显示保存按钮
+        canvasWidth: 800, // 画布宽度（需与图片尺寸一致）
+        canvasHeight: 600, // 画布高度（需与图片尺寸一致）
+        fontLoaded: false, // 字体是否加载完成
+        baseImage: null, // 基础图片对象
+
     },
     watch: {
         'memorySetting.singerMode': function (newValue, oldValue) {
@@ -66,6 +74,11 @@ new Vue({
         }
     },
     mounted() {
+        //测试
+        // this.initCanvas();
+
+
+
         let memorySetting = localStorage.getItem('guessLyrics');
         let currentSongSetting = localStorage.getItem('currentSongSetting');
         let everyDaySetting = localStorage.getItem('everyDaySetting');
@@ -115,24 +128,105 @@ new Vue({
         window.removeEventListener('scroll', this.handleScroll);
     },
     methods: {
+        // 初始化画布
+        async initCanvas() {
+            await this.loadFont();
+            await this.loadBaseImage();
+            this.drawBaseImage();
+        },
+
+        // 加载自定义字体
+        loadFont() {
+            return new Promise((resolve, reject) => {
+                const font = new FontFace("hanchan", "url('./badge/hanchan.otf')"); // 替换为你的字体路径
+
+                font
+                    .load()
+                    .then(() => {
+                        document.fonts.add(font);
+                        this.fontLoaded = true;
+                        resolve();
+                    })
+                    .catch((err) => {
+                        console.error("字体加载失败:", err);
+                        reject(err);
+                    });
+            });
+        },
+
+        // 修改 loadBaseImage 方法
+        loadBaseImage() {
+            return new Promise((resolve, reject) => {
+                this.baseImage = new Image();
+                // this.baseImage.crossOrigin = "anonymous"; // 关键代码
+                this.baseImage.src = badge_bg_1;
+
+                this.baseImage.onload = () => resolve();
+                this.baseImage.onerror = (err) => {
+                    console.error("图片加载失败:", err);
+                    reject(err);
+                };
+            });
+        },
+        // 绘制基础图片
+        drawBaseImage() {
+            const canvas = this.$refs.canvas;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(this.baseImage, 0, 0, 304, 394);
+        },
+        // 添加文字到画布
+        addTextToCanvas() {
+            if (!this.inputText.trim()) return;
+            if (!this.fontLoaded) {
+                alert("字体正在加载，请稍后...");
+                return;
+            }
+
+            const canvas = this.$refs.canvas;
+            const ctx = canvas.getContext("2d");
+
+            // 文字样式配置,
+            //测试
+            //女鬼
+            const textStyle = {
+                fontSize: 25,
+                fontFamily: "hanchan",
+                fillColor: "#fdf8da",
+                strokeColor: "#f1b596",
+                strokeWidth: 5,
+                posX: 55, // 文字X坐标
+                posY: 317, // 文字Y坐标
+            };
+
+            // 绘制描边文字
+            ctx.font = `${textStyle.fontSize}px ${textStyle.fontFamily}`;
+            ctx.strokeStyle = textStyle.strokeColor;
+            ctx.lineWidth = textStyle.strokeWidth;
+            ctx.strokeText(this.inputText, textStyle.posX, textStyle.posY);
+
+            // 绘制填充文字
+            ctx.fillStyle = textStyle.fillColor;
+            ctx.fillText(this.inputText, textStyle.posX, textStyle.posY);
+
+            this.showSaveButton = true;
+        },
+
+        // 保存图片
+        saveImage() {
+            const canvas = this.$refs.canvas;
+            const link = document.createElement("a");
+            link.download = "custom-image.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        },
+
+
+
         //黑箱每日
         blackIndex() {
             let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
             //"来自生菜点歌～",
-            //85 ai呀蔡蔡发布了一篇小红书笔记，快来看吧！ 😆 YiEMQsg3JnmcUay 😆 http://xhslink.com/a/DekNjLYD6uL7，复制本条信息，打开【小红书】App查看精彩内容！
             switch (this.getCurrentDate()) {
-                case 20250314:
-                    index = 4152;
-                    break;
-                case 20250317:
-                    index = 20876;//特别的人20876
-                    break;
-                case 20250318:
-                    index = 24625;//郎的诱惑24625
-                    break;
-                case 20250319:
-                    index = 25118;//天下的乌鸦一般黑25118 
-                    break;
                 case 20250320:
                     index = 25121;//鸭子25121
                     break;
@@ -155,16 +249,22 @@ new Vue({
                     index = 15069;//千千阙歌15069
                     break;
                 case 20250331:
-                    index = 25119;//上城名媛25119
+                    index = 25123;//美人外史25123
                     break;
                 case 20250401:
                     index = 12156;//忧愁12156
                     break;
                 case 20250402:
-                    index = 5924;//侠客行5924 
+                    index = 25122;//欲加之罪25122    
                     break;
                 case 20250403:
-                    index = 25110;//樱花草25110
+                    index = 25110;//樱花草25110   
+                    break;
+                case 20250404:
+                    index = 25119;//上城名媛25119
+                    break;
+                case 20250407:
+                    index = 5924;//侠客行5924 
                     break;
                 default:
                     break;
@@ -218,7 +318,6 @@ new Vue({
             input = this.replaceCharacter(input);
             return input;
         },
-
         sliderChange(value) {
             // console.log(value)
             if (value) {
@@ -228,7 +327,6 @@ new Vue({
         },
         //简单模式开关
         easyChange(value) {
-
             if (value) this.showHalfAnswer()
             else {
                 this.resetGuess()
@@ -293,7 +391,6 @@ new Vue({
             if (this.searchList.length > 9) {
                 this.overLimit = true;
                 this.searchList = this.searchList.slice(0, 9);
-
             } else {
                 this.overLimit = false;
             }
@@ -348,7 +445,7 @@ new Vue({
             let title = this.cleanString(question.name).trim();
             let singer = this.cleanString(question.singer).trim();
             //截取前80行
-            let lyricDetail = question.lyric.filter(f => _this.cleanString(f, question.singer) != '').slice(0, 80);
+            let lyricDetail = question.lyric.filter(f => _this.cleanString(f, question.singer) != '');
             //将歌名转换为数组
             this.currentSongSetting.titleLetters = title.split('').map(char => ({
                 letter: char.toString(),
@@ -617,7 +714,7 @@ new Vue({
 
             this.successMessage = '';
             this.wrongMessage = '';
-            
+
             if (haveGuessesMessage) {
                 this.successMessage = `${this.successMessage} ${haveGuessesMessage}`.trim();
             }

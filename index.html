@@ -31,21 +31,30 @@
 				<div @click="copyURL" style="cursor: pointer;"><el-tag type="info" v-if="currentSongSetting.songID!='' "
 						effect="plain" size="mini" style="margin-left: 10px;">{{currentSongSetting.songID}}</el-tag>
 				</div>
-
 			</div>
 			<div style="display: flex;align-items: center;">
-
 				<a href="https://yangzhiganlu1.github.io/guessPoetry/" target="_blank">
 					<img src="./poetry.png" alt="去猜诗词" style="width: 30px;margin-right: 7px;">
 				</a>
-
-
 				<el-tag type="success" v-if="currentSongSetting.isEveryDayMode" style="margin-right: 2px;">每日</el-tag>
 				<el-tag v-if="!currentSongSetting.isEveryDayMode" style="margin-right: 2px;">随机</el-tag>
 			</div>
-
-
 		</div>
+
+		<!-- 测试画布 -->
+		<!-- <div class="container">
+		
+			<div class="controls">
+			  <input type="text" v-model="inputText" placeholder="输入文字" />
+			  <button @click="addTextToCanvas">添加文字</button>
+			  <button @click="saveImage" :disabled="!showSaveButton">保存图片</button>
+			</div>
+		
+			
+			<canvas ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
+		</div> -->
+
+
 
 		<!-- 按钮组 -->
 		<div style="display: flex;justify-content: start;margin-bottom: 16px;flex-wrap: wrap;" class="buttons">
@@ -84,7 +93,8 @@
 						size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"
 						style="margin: 5px;" style="margin: 5px;">
 					</el-input>
-					<el-button v-else class="button-new-tag" size="small" @click="showInput" style="margin: 5px;">+ 新增
+					<el-button v-else class="button-new-tag" size="small" @click="showInput" style="margin: 5px;">+
+						新增
 					</el-button>
 				</div>
 			</div>
@@ -213,7 +223,7 @@
 			</span>
 		</el-dialog>
 	</div>
-
+	<script src="./js/photo.js"></script>
 	<script src="./js/main.js"></script>
 
 </body>
