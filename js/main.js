@@ -609,7 +609,7 @@ new Vue({
             });
         },
         //点击猜测按钮
-        guess(type) {
+        async guess(type) {
             // this.wrongMessage = '';
             // this.successMessage = '';
             if (this.currentSongSetting.success) return;
@@ -710,7 +710,7 @@ new Vue({
                     if (!this.currentSongSetting.correctGuesses.includes(char)) {
                         this.currentSongSetting.correctGuesses.push(char);
                     }
-                    if (!this.checkCompleted()) {
+                    if (!await this.checkCompleted()) {
                         // this.successMessage = `"${char}" 在歌词中!!`
                         guessIn.push(char)
                     } else {
