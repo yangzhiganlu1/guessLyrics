@@ -1,27 +1,44 @@
 /**
  * 例子
- *   //打开数据库——openDB
-        // this.db = await openDB(this.dbName, this.storeName, 1);
-        //如何往数据库里加数据——addData_indexDB
-        // for (let index = 0; index < dataImport.length; index++) {
-        //     const row = dataImport[index];
-        //     await addData_indexDB(this.db, this.customerStore, row);
-        // }
-        //通过索引和游标查询记录——cursorGetDataByIndex
-        // this.customerDataFromStore = await cursorGetDataByIndex(this.db, this.customerStore, 'kunnr', this.updateTabs.customer);
-        //通过游标读取数据——cursorGetData
-        // let dataSearched = await cursorGetData(this.db, this.customerStore);
-        //通过索引读取数据——getDataByIndex
-        // let dataFirst = await getDataByIndex(this.db, this.storeName, 'kunnr', kunnr)
-        //通过主键读取数据——getDataByKey
-        // let dataSearched = await getDataByKey(this.db, this.storeName, row.id);
-        //更新数据
-        //await updateData_indexDB(this.db, this.storeName, dataSearched);
+  //打开数据库——openDB
+  // this.db = await openDB(this.dbName, this.storeName, 1);
 
-        //删除数据——deleteData_indexDB
-        // dataSearched.forEach(async (row) => {
-        //     await deleteData_indexDB(this.db, this.customerStore, row.id);
-        // })
+  //如何往数据库里加数据——addData_indexDB
+  // for (let index = 0; index < dataImport.length; index++) {
+  //     const row = dataImport[index];
+  //     await addData_indexDB(this.db, this.customerStore, row);
+  // }
+
+  //通过索引和游标查询记录——cursorGetDataByIndex
+  // this.customerDataFromStore = await cursorGetDataByIndex(this.db, this.customerStore, 'kunnr', this.updateTabs.customer);
+
+  //通过游标读取数据——cursorGetData
+  // let dataSearched = await cursorGetData(this.db, this.customerStore);
+
+  //通过索引读取数据——getDataByIndex
+  // let dataFirst = await getDataByIndex(this.db, this.storeName, 'kunnr', kunnr)
+  //通过主键读取数据——getDataByKey
+  // let dataSearched = await getDataByKey(this.db, this.storeName, row.id);
+  //更新数据
+  //await updateData_indexDB(this.db, this.storeName, dataSearched);
+
+  //删除数据——deleteData_indexDB
+  // dataSearched.forEach(async (row) => {
+  //     await deleteData_indexDB(this.db, this.customerStore, row.id);
+  // })
+ */
+
+/**
+ * 
+ * 存在库里的数据格式
+ * {
+ * id:guid(),
+ * time:'2025-03-20',//创建日期
+ * timestamp:1925222236535,//创建时间戳  
+ * des:'xxxxxx',
+ * badgeID:'B01',
+ * photo:''//base64
+ * }
  */
 
 
@@ -51,11 +68,13 @@ function openDB(dbName, storeName, version = 1) {
       if (!db.objectStoreNames.contains(storeName)) {
         objectStore = db.createObjectStore(storeName, { keyPath: 'id' }) // 创建表
 
-        // objectStore.createIndex('kunnr', 'kunnr', { unique: false }) // 创建索引 可以让你搜索任意字段
-        // objectStore.createIndex('Item_Code', 'Item_Code', { unique: false }) // 创建索引 可以让你搜索任意字段
-        // objectStore.createIndex('Lot_Code', 'Lot_Code', { unique: false }) // 创建索引 可以让你搜索任意字段
-        // objectStore.createIndex('QTY', 'QTY', { unique: false }) // 创建索引 可以让你搜索任意字段
-          
+        objectStore.createIndex('time', 'time', { unique: false }) // 创建索引 可以让你搜索任意字段
+        objectStore.createIndex('timestamp', 'timestamp', { unique: false }) // 创建索引 可以让你搜索任意字段
+        objectStore.createIndex('des', 'des', { unique: false }) // 创建索引 可以让你搜索任意字段
+        objectStore.createIndex('badgeID', 'badgeID', { unique: false }) // 创建索引 可以让你搜索任意字段
+        objectStore.createIndex('photo', 'photo', { unique: false }) // 创建索引 可以让你搜索任意字段
+
+
         //建第二个库
         // objectStore = db.createObjectStore('customerStore', { keyPath: 'id' }) // 创建表
         // objectStore.createIndex('kunnr', 'kunnr', { unique: false }) // 创建索引 可以让你搜索任意字段
@@ -85,7 +104,7 @@ function addData_indexDB(db, storeName, data) {
 }
 
 /**
- * 通过主键读取数据
+ * 通过主键读取数据——主键:id
  */
 function getDataByKey(db, storeName, key) {
   return new Promise((resolve, reject) => {
@@ -145,7 +164,9 @@ function getDataByIndex(db, storeName, indexName, indexValue) {
 }
 
 /**
- * 通过索引和游标查询记录
+ * 通过索引和游标查询记录。
+ * indexName-列名
+ * indexValue-列的值
  */
 function cursorGetDataByIndex(db, storeName, indexName, indexValue) {
   let list = []

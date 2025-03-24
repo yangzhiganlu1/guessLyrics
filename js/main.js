@@ -59,17 +59,23 @@ new Vue({
             guessDate: 0,
             songID: '',
         },
-        inputText: "", // 用户输入的文字
+
+        inputText: "", // 用户输入的署名
         showSaveButton: false, // 是否显示保存按钮
         canvasWidth: 800, // 画布宽度（需与图片尺寸一致）
         canvasHeight: 600, // 画布高度（需与图片尺寸一致）
         fontLoaded: false, // 字体是否加载完成
         baseImage: null, // 基础图片对象
-        //徽章放在本地数据库
+        //徽章放在本地数据库indexDB
         dbName: 'badgeDB',
         storeName: 'badgeStore',
         db: '',//indexDB
         dbList: '',//indexDB读到的数据
+        currentBadge: {
+            badgeID: '',
+            photo: '',
+            desc: ''
+        }
 
     },
     watch: {
@@ -85,6 +91,7 @@ new Vue({
 
         //打开数据库——openDB
         // this.db = await openDB(this.dbName, this.storeName, 1);
+
 
 
         let memorySetting = localStorage.getItem('guessLyrics');
@@ -138,8 +145,11 @@ new Vue({
     methods: {
         // 初始化画布
         async initCanvas() {
+            // 加载自定义字体
             await this.loadFont();
+            // 加载图片
             await this.loadBaseImage();
+            // 绘制基础图片
             this.drawBaseImage();
         },
 
@@ -162,12 +172,12 @@ new Vue({
             });
         },
 
-        // 修改 loadBaseImage 方法
+        // 加载图片
         loadBaseImage() {
             return new Promise((resolve, reject) => {
                 this.baseImage = new Image();
                 // this.baseImage.crossOrigin = "anonymous"; // 关键代码
-                this.baseImage.src = badge_bg_1;
+                this.baseImage.src = this.currentBadge.photo;
 
                 this.baseImage.onload = () => resolve();
                 this.baseImage.onerror = (err) => {
@@ -235,46 +245,49 @@ new Vue({
             let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
             //"来自生菜点歌～",
             switch (this.getCurrentDate()) {
-                case 20250320:
-                    index = 25121;//鸭子25121
-                    break;
-                case 20250321:
-                    index = 25116;//求神呐25116
-                    break;
                 case 20250324:
                     index = 25117;//劝学25117
                     break;
                 case 20250325:
-                    index = 6451;//私奔到月球6451
+                    index = 12156;//忧愁12156
                     break;
                 case 20250326:
-                    index = 21573;//净土21573
+                    index = 25125;//在我二十岁的时候，我回到了爸爸的小村庄，那是我的乌托邦25125
                     break;
                 case 20250327:
-                    index = 7446;//彼得与狼7446
+                    index = 6451;//私奔到月球6451
                     break;
                 case 20250328:
                     index = 15069;//千千阙歌15069
                     break;
                 case 20250331:
-                    index = 25123;//美人外史25123
+                    index = 21573;//净土21573
                     break;
                 case 20250401:
-                    index = 12156;//忧愁12156
+                    index = 25126;//我喜欢你胜过削好的水果周末的零食延后的死线冰镇西瓜正中间的那一口肆无忌惮的赖床和空调房里盖棉被的感觉但我就是不敢告诉你25126 
                     break;
                 case 20250402:
-                    index = 25122;//欲加之罪25122    
+                    index = 25123;//美人外史25123
                     break;
                 case 20250403:
                     index = 25110;//樱花草25110   
                     break;
                 case 20250404:
-                    index = 25124;//吉祥三宝25124
+                    index = 7446;//彼得与狼7446
                     break;
                 case 20250407:
-                    index = 5924;//侠客行5924   
+                    index = 25122;//欲加之罪25122 
                     break;
                 case 20250408:
+                    index = 5924;//侠客行5924   
+                    break;
+                case 20250409:
+                    index = 2952;//兰亭序2952
+                    break;
+                case 20250410:
+                    index = 25124;//吉祥三宝25124
+                    break;
+                case 20250411:
                     index = 25119;//上城名媛25119
                     break;
                 default:
@@ -766,12 +779,13 @@ new Vue({
             this.guess('tips');
         },
         //检查是否猜出歌名
-        checkCompleted() {
+        async checkCompleted() {
             if (this.currentSongSetting.titleLetters.filter(f => !f.revealed && !this.isBlank(f.letter)).length == 0) {
                 //做撒彩带特效
                 //.................
-                if (this.checkAchievement()) {
-
+                if (await this.checkAchievementAfterGame()) {
+                    //弹出徽章弹框
+                    this.badgeDialogVisible = true;
                 } else {
                     //弹出普通成功弹框
                     this.centerDialogVisible = true;
@@ -789,7 +803,19 @@ new Vue({
             return false;
         },
         //检查是否解锁成就
-        checkAchievement() {
+        async checkAchievementAfterGame() {
+            return false;
+            let searchedData = [];
+            //成就01-猜出1次歌名，新人徽章
+            searchedData = await cursorGetDataByIndex(this.db, this.storeName, 'badgeID', 'B01');
+            if (!searchedData) return true;
+            //成就02-猜测次数500次以上
+            if (this.currentSongSetting.guessCount > 500) {
+                searchedData = await cursorGetDataByIndex(this.db, this.storeName, 'badgeID', 'B02');
+                if (!searchedData) return true;
+            }
+
+            //查出
             return false;
         },
         //解析URL
@@ -992,7 +1018,3 @@ new Vue({
 
     }
 });
-function removeDoubleParentheses(text) {
-    // 删除成对的中英文括号及其内容
-    return text.replace(/\(.*?\)|（.*?）/g, '').trim();
-}

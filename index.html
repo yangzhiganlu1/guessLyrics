@@ -13,6 +13,8 @@
 	<script src="./js/filtered-songs.js"></script>
 	<script src="./js/seedrandom.min.js"></script>
 	<script src="./js/IndexDB.js"></script>
+	<script src="./js/common.js"></script>
+	<script src="./js/badge.js"></script>
 
 	<link rel="stylesheet" href="./css/base.css">
 	<link rel="stylesheet" href="./css/main.css">
@@ -42,18 +44,6 @@
 			</div>
 		</div>
 
-		<!-- 测试画布 -->
-		<!-- <div class="container">
-		
-			<div class="controls">
-			  <input type="text" v-model="inputText" placeholder="输入文字" />
-			  <button @click="addTextToCanvas">添加文字</button>
-			  <button @click="saveImage" :disabled="!showSaveButton">保存图片</button>
-			</div>
-		
-			
-			<canvas ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
-		</div> -->
 
 
 
@@ -223,9 +213,21 @@
 				<el-button @click="clickShare">分享</el-button>
 			</span>
 		</el-dialog>
-		<!-- 徽章弹框 -->
+		<!-- 徽章弹框    badgeDialogVisible    -->
+		 <!-- 测试画布 -->
+		<!-- <div class="container">
+		
+			<div class="controls">
+			  <input type="text" v-model="inputText" placeholder="输入文字" />
+			  <button @click="addTextToCanvas">添加文字</button>
+			  <button @click="saveImage" :disabled="!showSaveButton">保存图片</button>
+			</div>
+		
+			
+			<canvas ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
+		</div> -->
 	</div>
-	<script src="./js/photo.js"></script>
+
 	<script src="./js/main.js"></script>
 
 </body>
