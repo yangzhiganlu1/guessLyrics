@@ -245,18 +245,6 @@ new Vue({
             let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
             //"来自生菜点歌～",
             switch (this.getCurrentDate()) {
-                case 20250324:
-                    index = 25117;//劝学25117
-                    break;
-                case 20250325:
-                    index = 12156;//忧愁12156
-                    break;
-                case 20250326:
-                    index = 25125;//在我二十岁的时候，我回到了爸爸的小村庄，那是我的乌托邦25125
-                    break;
-                case 20250327:
-                    index = 6451;//私奔到月球6451
-                    break;
                 case 20250328:
                     index = 15069;//千千阙歌15069
                     break;
@@ -276,22 +264,37 @@ new Vue({
                     index = 7446;//彼得与狼7446
                     break;
                 case 20250407:
-                    index = 25122;//欲加之罪25122 
+                    index = 25128;//衣不称心25128
                     break;
                 case 20250408:
-                    index = 5924;//侠客行5924   
+                    index = 25129;//免我蹉跎苦25129
                     break;
                 case 20250409:
-                    index = 2952;//兰亭序2952
+                    index = 25130;//火车驶向云外，梦安魂于九霄25130
                     break;
                 case 20250410:
-                    index = 25124;//吉祥三宝25124
+                    index = 2952;//兰亭序2952
                     break;
                 case 20250411:
-                    index = 25119;//上城名媛25119     
+                    index = 5095;//春雨里洗过的太阳5095
                     break;
                 case 20250414:
+                    index = 25122;//欲加之罪25122      
+                    break;
+                case 20250415:
+                    index = 25124;//吉祥三宝25124    
+                    break;
+                case 20250416:
+                    index = 25131;//星期三的下午，我砸碎了花盆，跑了出去25131
+                    break;
+                case 20250417:
+                    index = 5924;//侠客行5924
+                    break;
+                case 20250418:
                     index = 25110;//樱花草25110 
+                    break;
+                case 20250421:
+                    index = 25119;//上城名媛25119  
                     break;
                 default:
                     break;
