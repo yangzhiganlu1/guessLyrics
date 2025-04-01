@@ -245,12 +245,7 @@ new Vue({
             let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
             //"来自生菜点歌～",
             switch (this.getCurrentDate()) {
-                case 20250328:
-                    index = 15069;//千千阙歌15069
-                    break;
-                case 20250331:
-                    index = 25127;//八块钱买绿豆冰 25127
-                    break;
+
                 case 20250401:
                     index = 25126;//我喜欢你胜过削好的水果周末的零食延后的死线冰镇西瓜正中间的那一口肆无忌惮的赖床和空调房里盖棉被的感觉但我就是不敢告诉你25126 
                     break;
@@ -261,7 +256,7 @@ new Vue({
                     index = 21573;//净土21573
                     break;
                 case 20250404:
-                    index = 7446;//彼得与狼7446
+                    index = 25132;//橙色预警25132
                     break;
                 case 20250407:
                     index = 25128;//衣不称心25128
@@ -273,28 +268,37 @@ new Vue({
                     index = 25130;//火车驶向云外，梦安魂于九霄25130
                     break;
                 case 20250410:
-                    index = 2952;//兰亭序2952
+                    index = 25124;//吉祥三宝25124 
                     break;
                 case 20250411:
-                    index = 5095;//春雨里洗过的太阳5095
+                    index = 20711;//心的距离20711 
                     break;
                 case 20250414:
-                    index = 25122;//欲加之罪25122      
+                    index = 7446;//彼得与狼7446
                     break;
                 case 20250415:
-                    index = 25124;//吉祥三宝25124    
+                    index = 25122;//欲加之罪25122   
                     break;
                 case 20250416:
                     index = 25131;//星期三的下午，我砸碎了花盆，跑了出去25131
                     break;
                 case 20250417:
-                    index = 5924;//侠客行5924
+                    index = 5924;//侠客行5924  
                     break;
                 case 20250418:
                     index = 25110;//樱花草25110 
                     break;
                 case 20250421:
-                    index = 25119;//上城名媛25119  
+                    index = 2952;//兰亭序2952
+                    break;
+                case 20250422:
+                    index = 25119;//上城名媛25119 
+                    break;
+                case 20250423:
+                    index = 5095;//春雨里洗过的太阳5095
+                    break;
+                case 20250424:
+                    index = 25133;//相爱就是说了100次对不起 25133
                     break;
                 default:
                     break;
