@@ -245,17 +245,9 @@ new Vue({
             let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
             //"来自生菜点歌～",
             switch (this.getCurrentDate()) {
-
-                case 20250401:
-                    index = 25126;//我喜欢你胜过削好的水果周末的零食延后的死线冰镇西瓜正中间的那一口肆无忌惮的赖床和空调房里盖棉被的感觉但我就是不敢告诉你25126 
-                    break;
-                case 20250402:
-                    index = 25123;//美人外史25123
-                    break;
                 case 20250403:
                     index = 21573;//净土21573
                     break;
-
                 case 20250407:
                     index = 25128;//衣不称心25128
                     break;
@@ -281,13 +273,13 @@ new Vue({
                     index = 25131;//星期三的下午，我砸碎了花盆，跑了出去25131
                     break;
                 case 20250417:
-                    index = 5924;//侠客行5924  
+                    index = 25124;//吉祥三宝25124
                     break;
                 case 20250418:
-                    index = 25110;//樱花草25110 
+                    index = 2952;//兰亭序2952
                     break;
                 case 20250421:
-                    index = 2952;//兰亭序2952
+                    index = 25134;//海娃与3丫 25134
                     break;
                 case 20250422:
                     index = 25119;//上城名媛25119 
@@ -296,7 +288,13 @@ new Vue({
                     index = 5095;//春雨里洗过的太阳5095
                     break;
                 case 20250424:
-                    index = 25133;//相爱就是说了100次对不起 25133    25124;//吉祥三宝25124 
+                    index = 5924;//侠客行5924 
+                    break;
+                case 20250425:
+                    index = 25110;//樱花草25110 
+                    break;
+                case 20250428:
+                    index = 25133;//相爱就是说了100次对不起 25133 
                     break;
                 default:
                     break;
