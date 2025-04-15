@@ -240,66 +240,69 @@ new Vue({
 
 
 
-        //黑箱每日
         blackIndex() {
-            let index = this.getRandomIndex(lyricsArray, this.getCurrentDate());
-            //"来自生菜点歌～",
-            switch (this.getCurrentDate()) {
-                case 20250403:
-                    index = 21573;//净土21573
-                    break;
-                case 20250407:
-                    index = 25128;//衣不称心25128
-                    break;
-                case 20250408:
-                    index = 25129;//免我蹉跎苦25129
-                    break;
-                case 20250409:
-                    index = 25132;//橙色预警25132   
-                    break;
-                case 20250410:
-                    index = 25130;//火车驶向云外，梦安魂于九霄25130
-                    break;
-                case 20250411:
-                    index = 20711;//心的距离20711 
-                    break;
-                case 20250414:
-                    index = 7446;//彼得与狼7446
-                    break;
-                case 20250415:
-                    index = 25122;//欲加之罪25122   
-                    break;
-                case 20250416:
-                    index = 25131;//星期三的下午，我砸碎了花盆，跑了出去25131
-                    break;
-                case 20250417:
-                    index = 25124;//吉祥三宝25124
-                    break;
-                case 20250418:
-                    index = 2952;//兰亭序2952
-                    break;
-                case 20250421:
-                    index = 25134;//海娃与3丫 25134
-                    break;
-                case 20250422:
-                    index = 25119;//上城名媛25119 
-                    break;
-                case 20250423:
-                    index = 5095;//春雨里洗过的太阳5095
-                    break;
-                case 20250424:
-                    index = 5924;//侠客行5924 
-                    break;
-                case 20250425:
-                    index = 25110;//樱花草25110 
-                    break;
-                case 20250428:
-                    index = 25133;//相爱就是说了100次对不起 25133 
-                    break;
-                default:
-                    break;
+            // "来自草莓点歌～",
+
+            // 预定义的歌曲索引列表（按顺序播放）
+            const predefinedPlaylist = [
+                7446,   // 彼得与狼
+                25122,  // 欲加之罪
+25144,//赚点窝囊费
+                25110,  // 樱花草
+                25124,  // 吉祥三宝
+                25140,//南三环东路
+                25135,//蠢货
+                25131,  // 星期三的下午，我砸碎了花盆，跑了出去
+                2,//难念的经
+                5095,   // 春雨里洗过的太阳
+                25136,//罗曼星废墟
+                25137,//既白梨
+                25138,//不太周的情歌
+
+                2952,   // 兰亭序
+                25134,  // 海娃与3丫
+                5924,   // 侠客行
+                25119,  // 上城名媛
+                25139,//滥俗的歌
+                25133,   // 相爱就是说了100次对不起
+
+                25141,//取一念
+                25142,//千秋渡
+
+25143,//好胆你就来
+
+
+
+
+            ];
+
+            // 解析当前日期（假设getCurrentDate()返回YYYYMMDD格式的数字）
+            const currentDateNum = this.getCurrentDate();
+            const currentDateStr = currentDateNum.toString();
+            const currentDate = new Date(
+                parseInt(currentDateStr.substring(0, 4)),  // 年
+                parseInt(currentDateStr.substring(4, 6)) - 1, // 月（JavaScript月份从0开始）
+                parseInt(currentDateStr.substring(6, 8))   // 日
+            );
+
+            // 开始日期（2025年4月14日）
+            const startDate = new Date(2025, 3, 14); // 注意：月份从0开始（3表示4月）
+
+            // 计算日期差（单位：天）
+            const timeDiff = currentDate - startDate;
+            const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+            // 如果是工作日且在歌单范围内
+            if (dayDiff >= 0 && dayDiff < predefinedPlaylist.length) {
+                const dayOfWeek = currentDate.getDay(); // 0是周日，1是周一，...，6是周六
+                // 检查是否是工作日（周一到周五）
+                if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                    return predefinedPlaylist[dayDiff]; // 按顺序返回歌单中的歌曲
+                }
             }
-            return index;
+
+            // 默认情况：随机选择歌曲
+            return this.getRandomIndex(lyricsArray, this.getCurrentDate());
         },
         //判定是否为空格
         isBlank(char) {
